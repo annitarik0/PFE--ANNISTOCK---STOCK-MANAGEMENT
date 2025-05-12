@@ -1,0 +1,755 @@
+/*------------------------------------------------------------------
+ * Theme Name: iofrm - form templates
+ * Theme URI: http://www.brandio.io/envato/iofrm
+ * Author: Brandio
+ * Author URI: http://www.brandio.io/
+ * Description: A Bootstrap Responsive HTML5 Template
+ * Version: 1.0
+ * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+ * Bootstrap v4.1 (http://getbootstrap.com)
+ * Copyright 2019 Brandio.
+ -------------------------------------------------------------------*/
+/*------------------------------------------------------------------
+[Table of contents]
+
+1. General Styles.
+2. Responsive Styles.
+-------------------------------------------------------------------*/
+@import url("https://fonts.googleapis.com/css?family=Lato:100,300,400,700,900");
+/* -----------------------------------
+    1 - General Styles
+------------------------------------*/
+*, body {
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+    height: 100%;
+}
+
+.form-body {
+    background-color: #0093FF;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+.form-body > .row {
+    position: relative;
+    margin-left: 0;
+    margin-right: 0;
+    height: 100%;
+}
+
+.website-logo {
+    display: inline-block;
+    position: absolute;
+    z-index: 1000;
+    top: 30px;
+    left: 30px;
+    right: initial;
+    bottom: initial;
+}
+
+.website-logo img {
+    width: 100px;
+}
+
+.website-logo a {
+    display: inline-block;
+}
+
+.website-logo .logo {
+    display: inline-block;
+    background-image: url("../images/logo-light.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.website-logo .logo img {
+    width: auto;
+}
+
+.logo-size {
+    width: 120px !important;
+    height: auto;
+    opacity: 1 !important;
+}
+
+.website-logo .logo img.logo-size {
+    opacity: 1 !important;
+}
+
+/* Form holder and content */
+.form-holder {
+    margin-left: 0;
+    width: 100%;
+}
+
+/* Add margin to the form body */
+.form-body {
+    margin: 20px;
+}
+
+/* Adjust form content spacing */
+.form-content {
+    margin-top: 30px;
+}
+
+.form-content .form-items {
+    display: inline-block;
+    width: 100%;
+    max-width: 340px;
+    text-align: center;
+    transition: all 0.4s ease;
+}
+
+.form-content h3 {
+    color: #fff;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 10px;
+}
+
+.form-content h3.form-title {
+    margin-bottom: 30px;
+}
+
+.form-content p {
+    color: #fff;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 300;
+    line-height: 20px;
+    margin-bottom: 30px;
+}
+
+.form-content label {
+    color: #fff;
+    text-align: left;
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 20px;
+    margin-bottom: 10px;
+}
+
+.form-content .page-links {
+    margin-bottom: 34px;
+}
+
+.form-content .page-links a {
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 300;
+    font-size: 15px;
+    margin-right: 20px;
+    transition: all 0.3s ease;
+}
+
+.form-content .page-links a:last-child {
+    margin-right: 0;
+}
+
+.form-content .page-links a:after {
+    position: absolute;
+    content: '';
+    width: 100%;
+    height: 2px;
+    left: 0;
+    bottom: -10px;
+    background-color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.form-content .page-links a.active {
+    font-weight: 700;
+}
+
+.form-content .page-links a.active:after {
+    background-color: #fff;
+}
+
+.form-content .page-links a:hover:after, .form-content .page-links a:focus:after {
+    background-color: #fff;
+}
+
+/* Form controls */
+.form-content input,
+.form-content .dropdown-toggle.btn-default {
+    width: 100%;
+    padding: 9px 20px;
+    text-align: left;
+    border: 0;
+    outline: 0;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 15px;
+    font-weight: 300;
+    color: #8D8D8D;
+    transition: all 0.3s ease;
+    margin-bottom: 14px;
+    height: auto;
+}
+
+.form-content input:hover, .form-content input:focus,
+.form-content .dropdown-toggle.btn-default:hover, .form-content .dropdown-toggle.btn-default:focus {
+    border: 0;
+    background-color: #ebeff8;
+    color: #8D8D8D;
+}
+
+.form-content textarea {
+    width: 100%;
+    padding: 8px 20px;
+    border-radius: 6px;
+    text-align: left;
+    background-color: #fff;
+    border: 0;
+    font-size: 15px;
+    color: #8D8D8D;
+    outline: none;
+    resize: none;
+    height: 120px;
+    transition: none;
+    margin-bottom: 14px;
+}
+
+.form-content textarea:hover, .form-content textarea:focus {
+    border: 0;
+    background-color: #ebeff8;
+    color: #8D8D8D;
+}
+
+.form-content input[type=checkbox], .form-content input[type=radio] {
+    width: auto;
+}
+
+.form-content input[type=checkbox]:not(:checked), .form-content input[type=checkbox]:checked, .form-content input[type=radio]:not(:checked), .form-content input[type=radio]:checked {
+    position: absolute;
+    left: -9999px;
+}
+
+.form-content input[type=checkbox]:not(:checked) + label, .form-content input[type=checkbox]:checked + label, .form-content input[type=radio]:not(:checked) + label, .form-content input[type=radio]:checked + label {
+    position: relative;
+    padding-left: 23px;
+    cursor: pointer;
+    display: inline;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 700;
+    margin-left: 0;
+    transition: all 0.3s ease;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.form-content input[type=checkbox]:checked + label, .form-content input[type=radio]:checked + label {
+    color: #fff;
+}
+
+.form-content input[type=checkbox]:checked + label:before, .form-content input[type=radio]:checked + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 15px;
+    height: 15px;
+    background: #fff;
+    border-radius: 50px;
+    border: 0px solid #fff;
+    transition: all 0.3s ease;
+}
+
+.form-content input[type=checkbox]:not(:checked) + label:before, .form-content input[type=radio]:not(:checked) + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 15px;
+    height: 15px;
+    background: transparent;
+    border: 2px solid #fff;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.form-content input[type=checkbox]:not(:checked) + label:after, .form-content input[type=radio]:not(:checked) + label:after {
+    opacity: 0;
+    transform: scale(0);
+}
+
+.form-content input[type=checkbox]:checked + label:after, .form-content input[type=checkbox]:not(:checked) + label:after {
+    content: '\f00c';
+    font-family: "Font Awesome 5 Free";
+    font-style: normal;
+    font-weight: 600;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    font-size: 9px;
+    color: #0093FF;
+    line-height: 14px;
+    transition: all 0.2s ease;
+}
+
+.form-content input[type=checkbox]:disabled + label, .form-content input[type=radio]:disabled + label {
+    opacity: 0.6;
+}
+
+.form-content .custom-options {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 5px;
+}
+
+.form-content .custom-options input[type=checkbox]:not(:checked) + label, .form-content .custom-options input[type=checkbox]:checked + label, .form-content .custom-options input[type=radio]:not(:checked) + label, .form-content .custom-options input[type=radio]:checked + label {
+    padding-left: 0;
+    color: #606060;
+    font-size: 13px;
+    font-weight: normal;
+    margin-left: 0;
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
+
+.form-content .custom-options input[type=checkbox]:checked + label, .form-content .custom-options input[type=radio]:checked + label {
+    color: #606060;
+    font-weight: bold;
+}
+
+.form-content .custom-options input[type=checkbox]:checked + label:before, .form-content .custom-options input[type=radio]:checked + label:before {
+    display: none;
+}
+
+.form-content .custom-options input[type=checkbox]:not(:checked) + label:before, .form-content .custom-options input[type=radio]:not(:checked) + label:before {
+    display: none;
+}
+
+.form-content .custom-options input[type=checkbox]:checked + label:after, .form-content .custom-options input[type=checkbox]:not(:checked) + label:after {
+    display: none;
+}
+
+.form-content .form-button {
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.form-content .form-button .ibtn {
+    border-radius: 6px;
+    border: 0;
+    padding: 6px 28px;
+    background-color: #fff;
+    color: #29A4FF;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+    margin-right: 10px;
+    outline: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.16);
+}
+
+.form-content .form-button .ibtn:last-child {
+    margin-right: 0;
+}
+
+.form-content .form-button .ibtn:hover, .form-content .form-button .ibtn:focus {
+    box-shadow: 0 5px 6px rgba(0, 0, 0, 0.16);
+}
+
+.form-content .btn {
+    border-radius: 6px;
+    padding: 6px 28px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-right: 10px;
+    border: 0;
+}
+
+.form-content .btn.btn-light {
+    color: #B0C2D0;
+}
+
+.form-content .btn.btn-light:hover, .form-content .btn.btn-light:focus {
+    color: #a0b6c6;
+}
+
+.form-content .btn:last-child {
+    margin-right: 0;
+}
+
+.form-content form {
+    margin-bottom: 30px;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+    .form-holder {
+        margin-left: 0;
+    }
+
+    .website-logo {
+        top: 50px;
+        left: 50px;
+        right: initial;
+        bottom: initial;
+    }
+
+    .website-logo .logo {
+        background-image: url("../images/logo-light.svg");
+    }
+}
+
+@media (max-width: 575px) {
+    .form-content .form-items {
+        padding: 25px 30px;
+    }
+
+    .form-content .form-button {
+        text-align: center;
+    }
+}
+
+/* Improved styling for login/register forms */
+.form-body {
+    margin: 0;
+    padding-top: 30px;
+}
+
+.form-content {
+    background-color: #fff;
+    margin: 40px auto;
+    max-width: 500px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.16);
+}
+
+.form-items {
+    padding: 30px;
+}
+
+.form-content h3 {
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.form-content p {
+    color: #666;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.form-content .form-button {
+    margin-top: 25px;
+}
+
+.form-content .form-button button {
+    padding: 11px 30px;
+    font-weight: 500;
+}
+
+.annistock {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.annistock img {
+    max-width: 180px;
+    height: auto;
+}
+
+/* Fix for login form */
+.form-items {
+    margin-top: 20px !important;
+}
+
+.form-items h3 {
+    margin-bottom: 15px !important;
+}
+
+.form-items p {
+    margin-bottom: 25px !important;
+}
+
+/* Fix for user creation form */
+.error {
+    color: red;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+}
+
+input.error, select.error, textarea.error {
+    border: 1px solid red !important;
+}
+
+/* Center everything for login/register */
+body.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #0093FF;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.auth-logo {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.auth-logo img {
+    max-width: 150px;
+    height: auto;
+}
+
+.auth-form {
+    background-color: white;
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.16);
+}
+
+.auth-form h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.auth-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.auth-form button {
+    width: 100%;
+    padding: 10px;
+    background-color: #0093FF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.auth-form button:hover {
+    background-color: #0077cc;
+}
+
+.auth-links {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.auth-links a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+/* Form validation styles */
+.error {
+    color: #dc3545;
+    font-size: 12px;
+    margin-top: 5px;
+    display: block;
+    text-align: left;
+}
+
+input.error, select.error, textarea.error {
+    border: 1px solid #dc3545 !important;
+}
+
+/* AJAX form submission styles */
+.form-loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.form-body.without-side .form-content .form-sent .tick-holder .tick-icon:before {
+    background-color: #8CCB57;
+}
+
+.form-body.without-side .form-content .form-sent .tick-holder .tick-icon:after {
+    background-color: #8CCB57;
+}
+
+.form-body.without-side .form-content .form-sent h3 {
+    color: #000;
+}
+
+.form-body.without-side .form-content .form-sent p {
+    color: #000;
+}
+
+.form-body.without-side .form-content .form-sent .info-holder {
+    border-top: 1px solid rgba(0, 0, 0, 0.5);
+}
+
+.form-body.without-side .form-content .form-sent .info-holder span {
+    color: #000;
+}
+
+.form-body.without-side .form-content .form-sent .info-holder a {
+    color: #000;
+}
+
+.form-body.without-side .form-content .hide-it {
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    -ms-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+}
+
+@keyframes zoom-in-img {
+    0% {
+        -webkit-transform: scale(1);
+        -moz-transform: scale(1);
+        -ms-transform: scale(1);
+        transform: scale(1);
+    }
+
+    50% {
+        -webkit-transform: scale(1.15);
+        -moz-transform: scale(1.15);
+        -ms-transform: scale(1.15);
+        transform: scale(1.15);
+    }
+
+    100% {
+        -webkit-transform: scale(1);
+        -moz-transform: scale(1);
+        -ms-transform: scale(1);
+        transform: scale(1);
+    }
+}
+/* -----------------------------------
+    2 - Responsive Styles
+------------------------------------*/
+@media (max-width: 992px) {
+    .img-holder {
+        display: none;
+    }
+
+    .form-holder {
+        margin-left: 0;
+    }
+
+    .form-holder .form-content {
+        padding: 20px;
+        position: relative;
+    }
+
+    .form-body.on-top .form-holder .form-content, .form-body.on-top-mobile .form-holder .form-content {
+        padding: 10px;
+    }
+
+    .website-logo {
+        position: relative;
+        top: 50px;
+        left: 50px;
+        right: initial;
+        bottom: initial;
+    }
+
+    .website-logo .logo {
+        background-image: url("../images/logo-light.svg");
+    }
+
+    .form-body.without-side .img-holder {
+        display: inline-block;
+    }
+
+    .form-body.without-side .website-logo .logo {
+        background-image: url("../images/logo-light.svg");
+    }
+
+    .form-body.without-side .form-holder .form-content {
+        /* Add your styles here */
+        padding: 40px;
+    }
+
+    .form-body.on-top-mobile .website-logo {
+        position: absolute;
+    }
+
+    .form-body.on-top-mobile .img-holder {
+        display: block;
+        position: relative;
+        width: 100%;
+        min-height: initial;
+        height: initial;
+        overflow: initial;
+        padding: 40px;
+    }
+
+    .form-body.on-top-mobile .img-holder .info-holder.simple-info h3 {
+        margin-bottom: 16px;
+    }
+
+    .form-body.on-top-mobile .img-holder .info-holder.simple-info p {
+        margin-bottom: 10px;
+    }
+
+    .form-body.on-top-mobile .img-holder .info-holder.simple-info img {
+        margin-bottom: 20px;
+    }
+
+    .form-body.on-top-mobile .form-holder {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 575px) {
+    .form-body.on-top .img-holder, .form-body.on-top-mobile .img-holder {
+        padding: 90px 40px 40px;
+    }
+
+    .form-content .row.top-padding .form-button {
+        text-align: center !important;
+        margin-top: 0px;
+    }
+}
+
+
+
+
+
+
+
