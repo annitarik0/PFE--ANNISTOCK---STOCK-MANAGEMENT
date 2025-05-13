@@ -65,6 +65,34 @@
 
                                 <!-- Search icon already added above -->
 
+                                <!-- Language Switcher -->
+                                <li class="list-inline-item dropdown notification-list">
+                                    <a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="#" role="button"
+                                    aria-haspopup="false" aria-expanded="false">
+                                        <i class="mdi mdi-translate noti-icon"></i>
+                                        <span class="d-none d-md-inline-block ml-1">
+                                            {{ app()->getLocale() == 'fr' ? 'Français' : 'English' }}
+                                        </span>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated">
+                                        <div class="dropdown-header">Language</div>
+                                        <a href="{{ url('/locale/en') }}" class="dropdown-item {{ app()->getLocale() == 'en' ? 'active' : '' }}">
+                                            <i class="mdi mdi-flag-outline mr-2"></i> English
+                                            @if(app()->getLocale() == 'en')
+                                                <i class="mdi mdi-check text-success float-right mt-1"></i>
+                                            @endif
+                                        </a>
+
+                                        <a href="{{ url('/locale/fr') }}" class="dropdown-item {{ app()->getLocale() == 'fr' ? 'active' : '' }}">
+                                            <i class="mdi mdi-flag-outline mr-2"></i> Français
+                                            @if(app()->getLocale() == 'fr')
+                                                <i class="mdi mdi-check text-success float-right mt-1"></i>
+                                            @endif
+                                        </a>
+                                    </div>
+                                </li>
+
+                                <!-- Notifications -->
                                 <li class="list-inline-item dropdown notification-list">
                                     <a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="#" role="button"
                                     aria-haspopup="false" aria-expanded="false" id="notificationDropdown">
@@ -174,23 +202,33 @@
                                     </a>
                                     <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated profile-dropdown">
                                         @if(Auth::check())
-                                            <a class="dropdown-item" href="{{ route('profile.edit')}}"><i class="dripicons-user text-muted"></i> Profile</a>
+                                            <a class="dropdown-item" href="{{ route('profile.edit')}}"><i class="dripicons-user text-muted"></i>
+                                                @if(app()->getLocale() == 'fr') Profil @else Profile @endif
+                                            </a>
                                             @if(Auth::check() && is_object(Auth::user()) && Auth::user()->isAdmin())
-                                                <a class="dropdown-item" href="{{ route('users.index')}}"><i class="dripicons-gear text-muted"></i> Manage Users</a>
+                                                <a class="dropdown-item" href="{{ route('users.index')}}"><i class="dripicons-gear text-muted"></i>
+                                                    @if(app()->getLocale() == 'fr') Gestion des utilisateurs @else Manage Users @endif
+                                                </a>
                                             @endif
-                                            <a class="dropdown-item" href="{{ route('orders.my')}}"><i class="dripicons-document text-muted"></i> My Orders</a>
+                                            <a class="dropdown-item" href="{{ route('orders.my')}}"><i class="dripicons-document text-muted"></i>
+                                                @if(app()->getLocale() == 'fr') Mes commandes @else My Orders @endif
+                                            </a>
                                             <div class="dropdown-divider"></div>
                                             <form method="POST" action="{{ route('logout') }}">
                                                 @csrf
                                                 <x-dropdown-link :href="route('logout')"
                                                     onclick="event.preventDefault();
                                                     this.closest('form').submit();">
-                                                    Logout
+                                                    @if(app()->getLocale() == 'fr') Déconnexion @else Logout @endif
                                                 </x-dropdown-link>
                                             </form>
                                         @else
-                                            <a class="dropdown-item" href="{{ route('login') }}"><i class="dripicons-user text-muted"></i> Login</a>
-                                            <a class="dropdown-item" href="{{ route('register') }}"><i class="dripicons-gear text-muted"></i> Register</a>
+                                            <a class="dropdown-item" href="{{ route('login') }}"><i class="dripicons-user text-muted"></i>
+                                                @if(app()->getLocale() == 'fr') Connexion @else Login @endif
+                                            </a>
+                                            <a class="dropdown-item" href="{{ route('register') }}"><i class="dripicons-gear text-muted"></i>
+                                                @if(app()->getLocale() == 'fr') Inscription @else Register @endif
+                                            </a>
                                         @endif
                                     </div>
                                 </li>
@@ -227,30 +265,45 @@
                             <ul class="navigation-menu">
 
                                 <li class="has-submenu">
-                                    <a href="{{ route('dashboard')}}"><i class="dripicons-home"></i> Dashboard</a>
+                                    <a href="{{ route('dashboard')}}"><i class="dripicons-home"></i>
+                                        @if(app()->getLocale() == 'fr') Tableau de bord @else Dashboard @endif
+                                    </a>
                                 </li>
 
                                 @if(Auth::check() && is_object(Auth::user()) && Auth::user()->isAdmin())
                                     <li class="has-submenu">
-                                        <a href="{{ route('users.index') }}"><i class="dripicons-user-group"></i> Users</a>
+                                        <a href="{{ route('users.index') }}"><i class="dripicons-user-group"></i>
+                                            @if(app()->getLocale() == 'fr') Utilisateurs @else Users @endif
+                                        </a>
                                     </li>
                                 @endif
 
                                 <li class="has-submenu">
-                                    <a href="{{ route('products.index') }}"><i class="dripicons-store"></i> Products</a>
+                                    <a href="{{ route('products.index') }}"><i class="dripicons-store"></i>
+                                        @if(app()->getLocale() == 'fr') Produits @else Products @endif
+                                    </a>
                                 </li>
 
                                 @if(Auth::check() && is_object(Auth::user()) && Auth::user()->isAdmin())
                                     <li class="has-submenu">
-                                        <a href="{{ route('categories.index') }}"><i class="dripicons-tags"></i> Categories</a>
+                                        <a href="{{ route('categories.index') }}"><i class="dripicons-tags"></i>
+                                            @if(app()->getLocale() == 'fr') Catégories @else Categories @endif
+                                        </a>
                                     </li>
                                 @endif
 
                                 <li class="has-submenu">
-                                    <a href="#"><i class="dripicons-cart"></i> Orders <div class="arrow-down"></div></a>
+                                    <a href="#"><i class="dripicons-cart"></i>
+                                        @if(app()->getLocale() == 'fr') Commandes @else Orders @endif
+                                        <div class="arrow-down"></div>
+                                    </a>
                                     <ul class="submenu">
-                                        <li><a href="{{ route('orders.index') }}">All Orders</a></li>
-                                        <li><a href="{{ route('orders.my') }}">My Orders</a></li>
+                                        <li><a href="{{ route('orders.index') }}">
+                                            @if(app()->getLocale() == 'fr') Toutes les commandes @else All Orders @endif
+                                        </a></li>
+                                        <li><a href="{{ route('orders.my') }}">
+                                            @if(app()->getLocale() == 'fr') Mes commandes @else My Orders @endif
+                                        </a></li>
                                     </ul>
                                 </li>
             </header>
@@ -268,6 +321,19 @@
 
     <!-- Add custom CSS for the logo in the header and dashboard cards -->
     <style>
+        /* Language Switcher Styling */
+        .dropdown-item.active {
+            background-color: rgba(75, 108, 183, 0.1);
+            color: #4b6cb7;
+        }
+
+        .dropdown-header {
+            font-weight: 600;
+            color: #4b6cb7;
+            background-color: rgba(75, 108, 183, 0.05);
+            padding: 8px 16px;
+        }
+
         /* Dashboard Card Styling - Matching Admin Dashboard Cards */
         .card.bg-primary,
         .card.bg-info,
@@ -470,6 +536,85 @@
         /* Ensure the dropdown menus appear above the logo */
         .dropdown-menu {
             z-index: 20;
+        }
+
+        /* Language Switcher Enhancement */
+        .dropdown-item.active i.mdi-check {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Language change indicator */
+        .language-change-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(to right, #4b6cb7, #182848);
+            z-index: 9999;
+            animation: progress 2s ease-in-out;
+            display: none;
+        }
+
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+
+        /* Language notification */
+        .language-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #4b6cb7;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 9999;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .language-notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .language-notification-content {
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+
+        .language-notification-content i {
+            margin-right: 10px;
+            font-size: 18px;
+            color: #ffffff;
+        }
+
+        .mdi-loading.mdi-spin {
+            animation: mdi-spin 1s infinite linear;
+        }
+
+        @keyframes mdi-spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Enhanced Search Bar Styling */
@@ -1066,6 +1211,7 @@
                     e.preventDefault();
                 }
             });
+
         });
     </script>
 @php

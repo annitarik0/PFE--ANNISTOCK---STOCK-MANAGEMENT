@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\LanguageController;
 
 Route::get('/', function () {
     // If the user is already authenticated, redirect to dashboard
@@ -108,6 +109,30 @@ Route::middleware(['auth', \App\Http\Middleware\HandleAuthErrors::class])->group
 Route::get('/search', [SearchController::class, 'search'])->name('search');
 Route::get('/api/search', [SearchController::class, 'apiSearch'])->name('api.search');
 
+// Language switch route
+Route::get('/locale/{locale}', [App\Http\Controllers\LocaleController::class, 'changeLocale'])->name('locale.change');
+
+// Debug route to check current locale
+Route::get('/debug-locale', function() {
+    return response()->json([
+        'app_locale' => app()->getLocale(),
+        'config_locale' => config('app.locale'),
+        'session_locale' => session('locale'),
+        'cookie_locale' => request()->cookie('locale'),
+        'translations' => [
+            'dashboard' => __('messages.dashboard'),
+            'products' => __('messages.products'),
+            'users' => __('messages.users')
+        ],
+        'lang_path' => lang_path(),
+        'resource_path' => resource_path('lang')
+    ]);
+});
+
+// Test locale page
+Route::get('/test-locale', function() {
+    return view('test-locale');
+});
 
 
 
