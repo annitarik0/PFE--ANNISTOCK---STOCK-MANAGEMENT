@@ -1370,9 +1370,15 @@
                                                         <h5 class="font-16 mb-0">Revenue Trend</h5>
                                                     </div>
                                                 </div>
-                                                <div class="chart-container premium-chart">
-                                                    <canvas id="revenueTrendChart"></canvas>
-                                                    <div class="chart-overlay"></div>
+                                                <div class="revenue-chart-container">
+                                                    <div class="chart-labels">
+                                                        <span class="revenue-label">Revenue ($)</span>
+                                                        <span class="orders-label">Orders</span>
+                                                    </div>
+                                                    <div class="chart-container premium-chart">
+                                                        <canvas id="revenueTrendChart"></canvas>
+                                                        <div class="chart-overlay"></div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1903,6 +1909,36 @@
                 transition: all 0.3s ease;
             }
 
+            /* Revenue Chart Container and Labels */
+            .revenue-chart-container {
+                position: relative;
+                margin-bottom: 15px;
+            }
+
+            .chart-labels {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 5px;
+                padding: 0 15px;
+            }
+
+            .revenue-label, .orders-label {
+                font-weight: bold;
+                padding: 3px 10px;
+                border-radius: 4px;
+                font-size: 12px;
+            }
+
+            .revenue-label {
+                color: white;
+                background-color: rgba(75, 108, 183, 1);
+            }
+
+            .orders-label {
+                color: white;
+                background-color: rgba(2, 197, 141, 1);
+            }
+
             /* Chart Legend */
             .chart-legend {
                 display: flex;
@@ -2373,6 +2409,21 @@
                                         }
                                     }
                                 }
+                            },
+                            // Add a title to show axis information
+                            title: {
+                                display: true,
+                                text: ['Revenue ($) on left axis', 'Orders on right axis'],
+                                position: 'top',
+                                color: '#333',
+                                font: {
+                                    size: 13,
+                                    weight: 'bold'
+                                },
+                                padding: {
+                                    top: 10,
+                                    bottom: 15
+                                }
                             }
                         },
                         scales: {
@@ -2385,19 +2436,7 @@
                                 beginAtZero: true,
                                 position: 'left',
                                 title: {
-                                    display: true,
-                                    text: 'Revenue ($)',
-                                    color: 'rgba(75, 108, 183, 1)',
-                                    font: {
-                                        size: 14,
-                                        weight: 'bold'
-                                    },
-                                    align: 'center',
-                                    padding: {
-                                        top: 0,
-                                        bottom: 20,
-                                        left: 0
-                                    }
+                                    display: false  // Hide the title since we're using the chart title
                                 },
                                 ticks: {
                                     callback: function(value) {
@@ -2418,19 +2457,7 @@
                                 beginAtZero: true,
                                 position: 'right',
                                 title: {
-                                    display: true,
-                                    text: 'Orders',
-                                    color: 'rgba(2, 197, 141, 1)',
-                                    font: {
-                                        size: 14,
-                                        weight: 'bold'
-                                    },
-                                    align: 'center',
-                                    padding: {
-                                        top: 0,
-                                        bottom: 20,
-                                        left: 0
-                                    }
+                                    display: false  // Hide the title since we're using the chart title
                                 },
                                 ticks: {
                                     precision: 0,
