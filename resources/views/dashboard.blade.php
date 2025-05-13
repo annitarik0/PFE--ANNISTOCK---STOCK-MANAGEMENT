@@ -2336,6 +2336,20 @@
                 // Simplified Revenue Trend Chart
                 const revenueTrendCtx = document.getElementById('revenueTrendChart').getContext('2d');
 
+                // Debug the data to ensure it's properly formatted
+                const monthLabels = {!! json_encode($months) !!};
+                const revenueData = {!! json_encode($monthlyRevenue) !!};
+                const orderData = {!! json_encode($orderCounts) !!};
+
+                // Ensure data is numeric
+                const numericRevenueData = revenueData.map(value => parseFloat(value) || 0);
+                const numericOrderData = orderData.map(value => parseInt(value) || 0);
+
+                // Log data for debugging
+                console.log('Month Labels:', monthLabels);
+                console.log('Revenue Data:', numericRevenueData);
+                console.log('Order Data:', numericOrderData);
+
                 // Create simple gradient for area fill
                 const gradientFill = revenueTrendCtx.createLinearGradient(0, 0, 0, 220);
                 gradientFill.addColorStop(0, 'rgba(75, 108, 183, 0.2)');
@@ -2344,11 +2358,11 @@
                 const revenueTrendChart = new Chart(revenueTrendCtx, {
                     type: 'line',
                     data: {
-                        labels: {!! json_encode($months) !!},
+                        labels: monthLabels,
                         datasets: [
                             {
                                 label: 'Revenue',
-                                data: {!! json_encode($monthlyRevenue) !!},
+                                data: numericRevenueData,
                                 backgroundColor: gradientFill,
                                 borderColor: 'rgba(75, 108, 183, 1)',
                                 borderWidth: 2,
@@ -2364,7 +2378,7 @@
                             },
                             {
                                 label: 'Orders',
-                                data: {!! json_encode($orderCounts) !!},
+                                data: numericOrderData,
                                 borderColor: 'rgba(2, 197, 141, 1)',
                                 borderWidth: 2,
                                 borderDash: [5, 5],
@@ -2383,7 +2397,8 @@
                     options: {
                         ...commonOptions,
                         interaction: {
-                            mode: 'index',
+                            mode: 'nearest',
+                            axis: 'x',
                             intersect: false
                         },
                         plugins: {
@@ -2397,16 +2412,21 @@
                                 display: false
                             },
                             tooltip: {
+                                mode: 'index',
+                                intersect: false,
                                 callbacks: {
                                     label: function(context) {
                                         let label = context.dataset.label || '';
-                                        let value = context.raw || 0;
+                                        let value = context.parsed.y || 0;
 
                                         if (label === 'Revenue') {
                                             return `${label}: $${value.toFixed(2)}`;
                                         } else {
-                                            return `${label}: ${value}`;
+                                            return `${label}: ${Math.round(value)}`;
                                         }
+                                    },
+                                    title: function(tooltipItems) {
+                                        return tooltipItems[0].label;
                                     }
                                 }
                             },
