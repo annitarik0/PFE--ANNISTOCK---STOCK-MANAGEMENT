@@ -65,32 +65,7 @@
 
                                 <!-- Search icon already added above -->
 
-                                <!-- Language Switcher -->
-                                <li class="list-inline-item dropdown notification-list">
-                                    <a class="nav-link dropdown-toggle arrow-none waves-effect" data-toggle="dropdown" href="#" role="button"
-                                    aria-haspopup="false" aria-expanded="false">
-                                        <i class="mdi mdi-translate noti-icon"></i>
-                                        <span class="d-none d-md-inline-block ml-1">
-                                            {{ app()->getLocale() == 'fr' ? 'Français' : 'English' }}
-                                        </span>
-                                    </a>
-                                    <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated">
-                                        <div class="dropdown-header">Language</div>
-                                        <a href="{{ url('/locale/en') }}" class="dropdown-item {{ app()->getLocale() == 'en' ? 'active' : '' }}">
-                                            <i class="mdi mdi-flag-outline mr-2"></i> English
-                                            @if(app()->getLocale() == 'en')
-                                                <i class="mdi mdi-check text-success float-right mt-1"></i>
-                                            @endif
-                                        </a>
 
-                                        <a href="{{ url('/locale/fr') }}" class="dropdown-item {{ app()->getLocale() == 'fr' ? 'active' : '' }}">
-                                            <i class="mdi mdi-flag-outline mr-2"></i> Français
-                                            @if(app()->getLocale() == 'fr')
-                                                <i class="mdi mdi-check text-success float-right mt-1"></i>
-                                            @endif
-                                        </a>
-                                    </div>
-                                </li>
 
                                 <!-- Notifications -->
                                 <li class="list-inline-item dropdown notification-list">
@@ -538,71 +513,7 @@
             z-index: 20;
         }
 
-        /* Language Switcher Enhancement */
-        .dropdown-item.active i.mdi-check {
-            display: inline-block;
-        }
 
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Language change indicator */
-        .language-change-indicator {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(to right, #4b6cb7, #182848);
-            z-index: 9999;
-            animation: progress 2s ease-in-out;
-            display: none;
-        }
-
-        @keyframes progress {
-            0% { width: 0%; }
-            50% { width: 70%; }
-            100% { width: 100%; }
-        }
-
-        /* Language notification */
-        .language-notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background-color: #4b6cb7;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 9999;
-            transform: translateY(-20px);
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .language-notification.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .language-notification-content {
-            display: flex;
-            align-items: center;
-            font-weight: 500;
-        }
-
-        .language-notification-content i {
-            margin-right: 10px;
-            font-size: 18px;
-            color: #ffffff;
-        }
 
         .mdi-loading.mdi-spin {
             animation: mdi-spin 1s infinite linear;

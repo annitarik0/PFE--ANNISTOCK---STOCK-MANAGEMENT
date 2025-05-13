@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('messages.login') }} - {{ __('messages.app_name') }}</title>
+    <title>Login - AnniStock</title>
     <link rel="stylesheet" type="text/css" href="{{asset('backend/assets/css/bootstrap.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('backend/assets/css/fontawesome-all.min.css')}}">
     <link rel="stylesheet" type="text/css" href="{{asset('backend/assets/css/iofrm-style.css')}}">
@@ -90,11 +90,11 @@
                         </div>
 
 
-                        <h3>{{ __('messages.login_title') }}</h3>
-                        <p>{{ __('messages.login_subtitle') }}</p>
+                        <h3>Get more things done with AnniStock.</h3>
+                        <p>Access to the most powerful tool in the entire inventory and stock management.</p>
 
                         <div class="page-links">
-                            <a href="{{route('login')}}" class="active">{{ __('messages.login') }}</a><a href="{{route('register')}}">{{ __('messages.register') }}</a>
+                            <a href="{{route('login')}}" class="active">Login</a><a href="{{route('register')}}">Register</a>
                         </div>
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
@@ -109,18 +109,18 @@
                                 </div>
                             @endif
 
-                            <input class="form-control" type="email" id="email" name="email" placeholder="{{ __('messages.email') }}" required value="{{ old('email') }}" style="background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                            <input class="form-control" type="email" id="email" name="email" placeholder="E-mail Address" required value="{{ old('email') }}" style="background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
                             @error('email')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
 
-                            <input class="form-control" type="password" id="password" name="password" placeholder="{{ __('messages.password') }}" required style="background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+                            <input class="form-control" type="password" id="password" name="password" placeholder="Password" required style="background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
                             @error('password')
                                 <span class="text-danger">{{ $message }}</span>
                             @enderror
 
                             <div class="form-button">
-                                <button id="submit" type="submit" class="ibtn">{{ __('messages.login') }}</button> <a href="{{ route('password.request') }}" style="color: white !important; text-decoration: none;">{{ __('messages.forgot_password') }}</a>
+                                <button id="submit" type="submit" class="ibtn">Login</button> <a href="{{ route('password.request') }}" style="color: white !important; text-decoration: none;">Forgot password?</a>
                             </div>
                         </form>
                     </div>
