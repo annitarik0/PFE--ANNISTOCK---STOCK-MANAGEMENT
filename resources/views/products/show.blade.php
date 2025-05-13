@@ -55,20 +55,201 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                background-color: #f8f9fa;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
                 overflow: hidden;
                 position: relative;
+                border-radius: 10px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+                margin: 20px;
             }
 
             .product-image-container img {
-                max-height: 90%;
-                max-width: 90%;
+                max-height: 85%;
+                max-width: 85%;
                 object-fit: contain;
-                transition: transform 0.5s ease;
+                transition: all 0.5s ease;
+                filter: drop-shadow(0 5px 15px rgba(0,0,0,0.1));
             }
 
             .product-image-container:hover img {
                 transform: scale(1.05);
+            }
+
+            /* Image zoom effect */
+            .product-image-zoom {
+                position: absolute;
+                top: 15px;
+                right: 15px;
+                background-color: rgba(255, 255, 255, 0.9);
+                color: #4b6cb7;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                opacity: 0;
+                transform: translateY(-10px);
+                transition: all 0.3s ease;
+                z-index: 10;
+            }
+
+            .product-image-container:hover .product-image-zoom {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .product-image-zoom:hover {
+                background-color: #4b6cb7;
+                color: white;
+            }
+
+            /* Modal for zoomed image */
+            .image-zoom-modal {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0,0,0,0.85);
+                z-index: 9999; /* Increased z-index to ensure it's above header */
+                overflow: hidden;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                padding-top: 70px; /* Add padding to account for the header */
+            }
+
+            .image-zoom-modal.active {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 1;
+            }
+
+            .zoomed-image-container {
+                position: relative;
+                width: 90%;
+                height: 85%; /* Reduced height to account for header */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .zoomed-image {
+                max-width: 90%;
+                max-height: 85%;
+                object-fit: contain;
+                box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+                transform: scale(0.9);
+                opacity: 0;
+                transition: all 0.4s ease;
+            }
+
+            .image-zoom-modal.active .zoomed-image {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            .zoom-close {
+                position: fixed; /* Changed to fixed positioning */
+                top: 100px; /* Positioned below the header */
+                right: 30px;
+                color: white;
+                background-color: rgba(255,0,0,0.7); /* More visible red background */
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                font-size: 24px;
+                transition: all 0.3s ease;
+                z-index: 10000; /* Ensure it's above everything */
+                box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            }
+
+            .zoom-close:hover {
+                background-color: rgba(255,0,0,0.9);
+                transform: rotate(90deg) scale(1.1);
+            }
+
+            /* Instructions for zoom modal */
+            .zoom-instructions {
+                position: absolute;
+                bottom: 20px;
+                left: 0;
+                right: 0;
+                display: flex;
+                justify-content: center;
+                gap: 20px;
+                color: rgba(255,255,255,0.7);
+                font-size: 14px;
+                background-color: rgba(0,0,0,0.5);
+                padding: 10px;
+                border-radius: 30px;
+                width: fit-content;
+                margin: 0 auto;
+                opacity: 0.7;
+                transition: opacity 0.3s ease;
+            }
+
+            .zoom-instructions:hover {
+                opacity: 1;
+            }
+
+            .zoom-instructions span {
+                display: flex;
+                align-items: center;
+                white-space: nowrap;
+            }
+
+            .zoom-instructions i {
+                margin-right: 5px;
+                font-size: 16px;
+            }
+
+            @media (max-width: 768px) {
+                .zoom-instructions {
+                    flex-direction: column;
+                    gap: 5px;
+                    padding: 10px 15px;
+                    bottom: 10px;
+                }
+
+                .zoom-close {
+                    top: 80px;
+                    right: 20px;
+                    width: 40px;
+                    height: 40px;
+                }
+            }
+
+            /* No image placeholder enhancement */
+            .no-image-placeholder {
+                width: 80%;
+                height: 80%;
+                background: linear-gradient(135deg, #f1f3f5 0%, #e9ecef 100%);
+                border-radius: 10px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                color: #adb5bd;
+                box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+            }
+
+            .no-image-placeholder i {
+                font-size: 80px;
+                margin-bottom: 20px;
+            }
+
+            .no-image-placeholder span {
+                font-size: 16px;
+                color: #6c757d;
             }
 
             .product-info {
@@ -408,13 +589,34 @@
                         <div class="col-lg-5">
                             <div class="product-image-container">
                                 @if($product->image)
-                                    <img src="{{ asset($product->image) }}" alt="{{ $product->name }}">
+                                    <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" id="productImage">
+                                    <div class="product-image-zoom" id="zoomButton">
+                                        <i class="mdi mdi-magnify-plus"></i>
+                                    </div>
                                 @else
-                                    <div class="d-flex align-items-center justify-content-center h-100 w-100">
-                                        <i class="mdi mdi-image-outline" style="font-size: 64px; color: #aaa;"></i>
+                                    <div class="no-image-placeholder">
+                                        <i class="mdi mdi-image-outline"></i>
+                                        <span>No image available</span>
                                     </div>
                                 @endif
                             </div>
+
+                            <!-- Image Zoom Modal -->
+                            @if($product->image)
+                            <div class="image-zoom-modal" id="imageZoomModal">
+                                <div class="zoomed-image-container">
+                                    <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="zoomed-image">
+                                    <div class="zoom-instructions">
+                                        <span><i class="mdi mdi-gesture-swipe"></i> Drag to move</span>
+                                        <span><i class="mdi mdi-gesture-tap-hold"></i> Double-click to reset</span>
+                                        <span><i class="mdi mdi-keyboard"></i> ESC to close</span>
+                                    </div>
+                                </div>
+                                <div class="zoom-close" id="zoomClose" title="Close (ESC)">
+                                    <i class="mdi mdi-close"></i>
+                                </div>
+                            </div>
+                            @endif
                         </div>
                         <div class="col-lg-7">
                             <div class="product-info">
@@ -463,12 +665,6 @@
                                     <a href="{{ route('products.index') }}" class="btn btn-secondary">
                                         <i class="mdi mdi-arrow-left"></i> Back to Products
                                     </a>
-
-                                    @if($product->quantity > 0)
-                                        <a href="{{ route('orders.create') }}" class="btn btn-primary">
-                                            <i class="mdi mdi-cart-plus"></i> Add to Order
-                                        </a>
-                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -510,7 +706,7 @@
                                         @if($relatedProduct->image)
                                             <img src="{{ asset($relatedProduct->image) }}" alt="{{ $relatedProduct->name }}" class="product-image">
                                         @else
-                                            <div class="no-image-placeholder">
+                                            <div class="no-image-placeholder" style="width: 100%; height: 100%; font-size: 40px;">
                                                 <i class="mdi mdi-image-outline"></i>
                                             </div>
                                         @endif
@@ -518,11 +714,6 @@
                                             <a href="{{ route('products.show', $relatedProduct->id) }}" class="product-overlay-btn view" title="View Details">
                                                 <i class="mdi mdi-eye"></i>
                                             </a>
-                                            @if($relatedProduct->quantity > 0)
-                                            <a href="{{ route('orders.create') }}" class="product-overlay-btn order" title="Add to Order">
-                                                <i class="mdi mdi-cart-plus"></i>
-                                            </a>
-                                            @endif
                                         </div>
                                     </div>
                                     <div class="product-info" style="padding: 15px;">
@@ -576,5 +767,110 @@
         <script src="{{asset('admin/assets/js/waves.js')}}"></script>
         <script src="{{asset('admin/assets/js/jquery.slimscroll.js')}}"></script>
         <script src="{{asset('admin/assets/js/app.js')}}"></script>
+
+        <!-- Product Image Zoom Functionality -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Get elements
+                const zoomButton = document.getElementById('zoomButton');
+                const zoomModal = document.getElementById('imageZoomModal');
+                const zoomClose = document.getElementById('zoomClose');
+                const productImage = document.getElementById('productImage');
+                const zoomedImage = document.querySelector('.zoomed-image');
+
+                // Get instructions element
+                const zoomInstructions = document.querySelector('.zoom-instructions');
+
+                // Only initialize if we have a product image
+                if (zoomButton && zoomModal && zoomClose) {
+                    // Open modal on zoom button click
+                    zoomButton.addEventListener('click', function() {
+                        zoomModal.classList.add('active');
+                        document.body.style.overflow = 'hidden'; // Prevent scrolling
+
+                        // Add animation class to zoomed image
+                        setTimeout(() => {
+                            zoomedImage.style.opacity = '1';
+                            zoomedImage.style.transform = 'scale(1)';
+
+                            // Show instructions briefly, then fade them
+                            if (zoomInstructions) {
+                                zoomInstructions.style.opacity = '1';
+                                setTimeout(() => {
+                                    zoomInstructions.style.opacity = '0.7';
+                                }, 3000);
+                            }
+                        }, 100);
+                    });
+
+                    // Close modal on close button click
+                    zoomClose.addEventListener('click', function() {
+                        closeZoomModal();
+                    });
+
+                    // Close modal on background click
+                    zoomModal.addEventListener('click', function(e) {
+                        if (e.target === zoomModal) {
+                            closeZoomModal();
+                        }
+                    });
+
+                    // Close modal on ESC key
+                    document.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape' && zoomModal.classList.contains('active')) {
+                            closeZoomModal();
+                        }
+                    });
+
+                    // Function to close modal
+                    function closeZoomModal() {
+                        zoomedImage.style.opacity = '0';
+                        zoomedImage.style.transform = 'scale(0.9)';
+
+                        // Add a visual feedback when closing
+                        zoomClose.style.transform = 'rotate(90deg) scale(0.8)';
+
+                        setTimeout(() => {
+                            zoomModal.classList.remove('active');
+                            document.body.style.overflow = ''; // Restore scrolling
+                            // Reset the transform for next time
+                            zoomClose.style.transform = '';
+                        }, 300);
+                    }
+
+                    // Allow image dragging in zoom mode
+                    let isDragging = false;
+                    let startX, startY, translateX = 0, translateY = 0;
+
+                    zoomedImage.addEventListener('mousedown', function(e) {
+                        isDragging = true;
+                        startX = e.clientX - translateX;
+                        startY = e.clientY - translateY;
+                        zoomedImage.style.cursor = 'grabbing';
+                    });
+
+                    document.addEventListener('mousemove', function(e) {
+                        if (!isDragging) return;
+
+                        translateX = e.clientX - startX;
+                        translateY = e.clientY - startY;
+
+                        zoomedImage.style.transform = `translate(${translateX}px, ${translateY}px)`;
+                    });
+
+                    document.addEventListener('mouseup', function() {
+                        isDragging = false;
+                        zoomedImage.style.cursor = 'grab';
+                    });
+
+                    // Double click to reset position
+                    zoomedImage.addEventListener('dblclick', function() {
+                        translateX = 0;
+                        translateY = 0;
+                        zoomedImage.style.transform = 'translate(0, 0)';
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

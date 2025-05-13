@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 
 class ProductController extends Controller
 {
@@ -162,13 +163,16 @@ class ProductController extends Controller
                 \Log::info('Creating notification for new product');
 
                 $notificationData = [
-                    'title' => 'New Product Added',
                     'message' => 'New product "' . $product->name . '" has been added to inventory with ' . $product->quantity . ' units',
                     'type' => 'success',
                     'is_read' => false,
-                    // Removed 'link' field as it doesn't exist in the database
                     'user_id' => auth()->id() ?? 1 // Add the user_id of the creator, default to 1 if not authenticated
                 ];
+
+                // Check if the title column exists in the notifications table
+                if (Schema::hasColumn('notifications', 'title')) {
+                    $notificationData['title'] = 'New Product Added';
+                }
 
                 \Log::info('Current authenticated user', [
                     'auth_id' => auth()->id(),
@@ -244,7 +248,7 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'quantity' => 'required|integer|min:1',
             'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|mimes:png|max:2048',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'description' => 'nullable|string',
         ]);
 
@@ -257,27 +261,74 @@ class ProductController extends Controller
         $product->description = $request->description;
 
         if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($product->image && file_exists(public_path($product->image))) {
-                unlink(public_path($product->image));
-            }
+            try {
+                // Log the image upload attempt
+                \Log::info('Processing product image update', [
+                    'product_id' => $product->id,
+                    'image_info' => [
+                        'name' => $request->file('image')->getClientOriginalName(),
+                        'size' => $request->file('image')->getSize(),
+                        'mime' => $request->file('image')->getMimeType(),
+                    ]
+                ]);
 
-            // Store new image
-            $path = $request->file('image')->store('product_images', 'public');
-            $product->image = 'storage/' . $path;
+                // Ensure the storage directory exists
+                if (!file_exists(public_path('storage/product_images'))) {
+                    mkdir(public_path('storage/product_images'), 0755, true);
+                }
+
+                // Delete old image if exists
+                if ($product->image && file_exists(public_path($product->image))) {
+                    unlink(public_path($product->image));
+                    \Log::info('Deleted old product image', [
+                        'old_image_path' => $product->image
+                    ]);
+                }
+
+                // Store new image
+                $path = $request->file('image')->store('product_images', 'public');
+                $product->image = 'storage/' . $path;
+
+                \Log::info('Image updated successfully', [
+                    'new_path' => $path,
+                    'full_path' => 'storage/' . $path
+                ]);
+            } catch (\Exception $e) {
+                \Log::error('Image update failed', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                return back()->withErrors(['image' => 'Failed to upload image: ' . $e->getMessage()])->withInput();
+            }
         }
 
         $product->save();
 
         // Create notification for product update
-        Notification::create([
-            'title' => 'Product Updated',
-            'message' => 'Product "' . $product->name . '" has been updated. New quantity: ' . $product->quantity . ', Price: $' . number_format($product->price, 2),
-            'type' => 'warning',
-            'is_read' => false,
-            // Removed 'link' field as it doesn't exist in the database
-            'user_id' => Auth::id() ?? 1 // Default to user ID 1 if not authenticated
-        ]);
+        try {
+            $notificationData = [
+                'message' => 'Product "' . $product->name . '" has been updated. New quantity: ' . $product->quantity . ', Price: $' . number_format($product->price, 2),
+                'type' => 'warning',
+                'is_read' => false,
+                'user_id' => Auth::id() ?? 1 // Default to user ID 1 if not authenticated
+            ];
+
+            // Check if the title column exists in the notifications table
+            if (Schema::hasColumn('notifications', 'title')) {
+                $notificationData['title'] = 'Product Updated';
+            }
+
+            Notification::create($notificationData);
+
+            \Log::info('Product update notification created successfully');
+        } catch (\Exception $e) {
+            \Log::error('Failed to create product update notification', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            // Don't throw the exception, just log it
+            // We still want to return success even if notification fails
+        }
 
         return redirect()->route('products.index')
             ->with('success', 'Product updated successfully');
@@ -302,16 +353,32 @@ class ProductController extends Controller
         $product->delete();
 
         // Create notification for product deletion
-        $userName = Auth::check() ? (is_object(Auth::user()) ? Auth::user()->name : 'Unknown User') : 'Unknown User';
+        try {
+            $userName = Auth::check() ? (is_object(Auth::user()) ? Auth::user()->name : 'Unknown User') : 'Unknown User';
 
-        Notification::create([
-            'title' => 'Product Deleted',
-            'message' => 'Product "' . $productName . '" (Price: $' . number_format($productPrice, 2) . ') has been removed from inventory by ' . $userName,
-            'type' => 'danger',
-            'is_read' => false,
-            // Removed 'link' field as it doesn't exist in the database
-            'user_id' => Auth::id() ?? 1 // Default to user ID 1 if not authenticated
-        ]);
+            $notificationData = [
+                'message' => 'Product "' . $productName . '" (Price: $' . number_format($productPrice, 2) . ') has been removed from inventory by ' . $userName,
+                'type' => 'danger',
+                'is_read' => false,
+                'user_id' => Auth::id() ?? 1 // Default to user ID 1 if not authenticated
+            ];
+
+            // Check if the title column exists in the notifications table
+            if (Schema::hasColumn('notifications', 'title')) {
+                $notificationData['title'] = 'Product Deleted';
+            }
+
+            Notification::create($notificationData);
+
+            \Log::info('Product deletion notification created successfully');
+        } catch (\Exception $e) {
+            \Log::error('Failed to create product deletion notification', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            // Don't throw the exception, just log it
+            // We still want to return success even if notification fails
+        }
 
         return redirect()->route('products.index')
             ->with('warning', 'Product deleted successfully');

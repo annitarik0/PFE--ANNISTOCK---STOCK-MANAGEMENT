@@ -51,16 +51,28 @@ class LoginRequest extends FormRequest
         $credentials = $this->only('email', 'password');
         \Log::info('Attempting authentication with credentials', ['email' => $credentials['email']]);
 
-        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
+        // Check if the user exists
+        $user = \App\Models\User::where('email', $this->input('email'))->first();
+        if (!$user) {
+            RateLimiter::hit($this->throttleKey());
+            \Log::error('User not found during authentication', ['email' => $this->input('email')]);
+            throw ValidationException::withMessages([
+                'email' => 'The provided email does not exist in our records.',
+            ]);
+        }
+
+        // Attempt authentication
+        if (!Auth::attempt($credentials, $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             // Log authentication failure
-            \Log::error('Authentication failed for user', [
-                'email' => $this->input('email')
+            \Log::error('Authentication failed for user - password mismatch', [
+                'email' => $this->input('email'),
+                'user_id' => $user->id
             ]);
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'password' => 'The provided password is incorrect.',
             ]);
         }
 
@@ -102,7 +114,7 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
     }
 }
 

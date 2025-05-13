@@ -388,13 +388,18 @@
                                 <label for="image" class="custom-file-upload">
                                     <i class="mdi mdi-cloud-upload"></i> Upload Image
                                 </label>
-                                <input type="file" id="image" name="image" accept="image/png">
+                                <input type="file" id="image" name="image" accept="image/png, image/jpeg, image/jpg, image/gif">
                                 <p class="image-help-text">
                                     <i class="mdi mdi-information-outline" style="color: #4b6cb7; margin-right: 5px;"></i>
-                                    Recommended: PNG image with white background<br>
+                                    Recommended: PNG or JPG image with white background<br>
                                     Maximum size: 2MB
                                 </p>
-                                @error('image') <span class="error">{{ $message }}</span> @enderror
+                                @error('image')
+                                <span class="error">
+                                    <i class="mdi mdi-alert-circle" style="margin-right: 5px;"></i>
+                                    {{ $message }}
+                                </span>
+                                @enderror
                             </div>
                         </div>
 
@@ -616,8 +621,9 @@
 
                         // Check file type
                         const fileType = input.files[0].type;
-                        if (fileType !== 'image/png') {
-                            alert('File must be a PNG image');
+                        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
+                        if (!allowedTypes.includes(fileType)) {
+                            alert('File must be a PNG, JPEG, JPG, or GIF image');
                             input.value = '';
                             return false;
                         }

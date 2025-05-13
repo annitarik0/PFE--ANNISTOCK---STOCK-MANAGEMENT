@@ -55,13 +55,7 @@
 </head>
 <body>
     <div class="form-body">
-        <div class="website-logo">
-            <a href="index.html">
-                <div class="logo">
-                    <img class="" alt="">
-                </div>
-            </a>
-        </div>
+
         <div class="row">
             <div class="form-holder">
                 <div class="form-content">

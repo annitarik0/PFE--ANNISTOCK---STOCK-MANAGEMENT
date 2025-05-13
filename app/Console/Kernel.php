@@ -17,6 +17,9 @@ class Kernel extends ConsoleKernel
         Commands\CreateTestDataCommand::class,
         Commands\FixTablesCommand::class,
         Commands\CreateTestOrderCommand::class,
+        Commands\ResetAdminPasswordCommand::class,
+        Commands\CheckDatabaseCommand::class,
+        Commands\CreateDatabaseCommand::class,
     ];
 
     /**

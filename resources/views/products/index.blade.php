@@ -170,25 +170,56 @@
                 border-bottom: none;
             }
 
+            .product-image-container {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto;
+                position: relative;
+                border-radius: 10px;
+                overflow: hidden;
+                background-color: #f8f9fa;
+                box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .product-image-container:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+            }
+
             .product-image {
-                width: 50px;
-                height: 50px;
-                object-fit: cover;
-                border-radius: 8px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                max-width: 90%;
+                max-height: 90%;
+                object-fit: contain;
+                transition: all 0.3s ease;
+            }
+
+            .product-image-container:hover .product-image {
+                transform: scale(1.08);
             }
 
             .product-image-placeholder {
-                width: 50px;
-                height: 50px;
-                background-color: #f8f9fa;
-                border-radius: 8px;
+                width: 80px;
+                height: 80px;
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                border-radius: 10px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 color: #adb5bd;
-                font-size: 24px;
+                font-size: 28px;
                 margin: 0 auto;
+                transition: all 0.3s ease;
+                box-shadow: inset 0 0 0 1px rgba(0,0,0,0.05);
+            }
+
+            .product-image-placeholder:hover {
+                color: #6c757d;
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.08);
             }
 
             .empty-products {
@@ -290,7 +321,9 @@
                                 <tr>
                                     <td>
                                         @if($product->image)
-                                            <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="product-image">
+                                            <div class="product-image-container">
+                                                <img src="{{ asset($product->image) }}" alt="{{ $product->name }}" class="product-image">
+                                            </div>
                                         @else
                                             <div class="product-image-placeholder">
                                                 <i class="mdi mdi-package-variant"></i>
