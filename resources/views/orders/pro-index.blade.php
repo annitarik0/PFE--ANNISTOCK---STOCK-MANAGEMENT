@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- App Icons -->
-    <link rel="shortcut icon" href="{{asset('admin/assets/images/favicon.ico')}}">
+    <link rel="shortcut icon" href="{{asset('backend/assets/images/img2.jpg.png')}}">
 
     <!-- App css -->
     <link href="{{asset('admin/assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
@@ -512,7 +512,7 @@
                                 </div>
                                 @if(Auth::check() && is_object(Auth::user()) && Auth::user()->isAdmin())
                                 <div class="order-info-item">
-                                    <div class="order-info-label">Customer</div>
+                                    <div class="order-info-label">User</div>
                                     <div class="order-info-value">{{ $order->user->name }}</div>
                                 </div>
                                 @endif

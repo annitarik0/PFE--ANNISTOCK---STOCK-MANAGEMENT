@@ -472,27 +472,159 @@
             z-index: 20;
         }
 
-        /* Minimalist Search Bar Styling */
+        /* Enhanced Search Bar Styling */
         .search-wrap {
             position: absolute;
             top: 70px;
             right: 0;
-            width: 300px;
+            width: 400px;
             background-color: #fff;
             z-index: 999;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.25s ease, visibility 0.25s ease;
-            border-radius: 4px;
+            transition: all 0.3s ease;
+            border-radius: 8px;
             margin-right: 15px;
             transform: translateY(-10px);
+            overflow: hidden;
         }
 
         .search-wrap.active {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
+        }
+
+        /* Search results styling */
+        .search-results {
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 0;
+            margin: 0;
+            border-top: 1px solid #f1f1f1;
+        }
+
+        .search-result-item {
+            display: flex;
+            padding: 12px 15px;
+            border-bottom: 1px solid #f1f1f1;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .search-result-item:hover {
+            background-color: #f8f9fa;
+            text-decoration: none;
+        }
+
+        .search-result-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            background-color: #f1f3f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .search-result-image {
+            width: 50px;
+            height: 50px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .search-result-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .search-result-icon.product {
+            background-color: rgba(78, 115, 223, 0.1);
+            color: #4e73df;
+        }
+
+        .search-result-icon.category {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .search-result-icon.order {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+        .search-result-icon.user {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #ffc107;
+        }
+
+        .search-result-content {
+            flex-grow: 1;
+            min-width: 0;
+        }
+
+        .search-result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .search-result-title {
+            font-weight: 600;
+            font-size: 14px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #333;
+            margin-right: 8px;
+        }
+
+        .search-result-subtitle {
+            font-size: 12px;
+            color: #6c757d;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 4px;
+        }
+
+        .search-result-badge {
+            font-size: 10px;
+            padding: 3px 6px;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+        .search-result-details {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 4px;
+            font-size: 11px;
+        }
+
+        .search-result-detail {
+            margin-right: 12px;
+            color: #6c757d;
+        }
+
+        .search-result-detail strong {
+            color: #495057;
+        }
+
+        .search-no-results {
+            padding: 20px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
         }
 
         .search-bar {
@@ -815,7 +947,12 @@
                             'X-Requested-With': 'XMLHttpRequest'
                         }
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         // Prepare content
                         let newContent = '';
@@ -841,21 +978,65 @@
                                     iconType = 'user';
                                 }
 
+                                // Create enhanced search result item with badges and images
+                                let badgeHtml = '';
+                                if (result.badge) {
+                                    badgeHtml = `<span class="search-result-badge badge badge-${result.badge.class}">${result.badge.text}</span>`;
+                                }
+
+                                let imageHtml = '';
+                                if (result.image) {
+                                    imageHtml = `<div class="search-result-image"><img src="${result.image}" alt="${result.title}"></div>`;
+                                } else {
+                                    imageHtml = `<div class="search-result-icon ${iconType}"><i class="mdi ${iconClass}"></i></div>`;
+                                }
+
+                                // Create details section if available
+                                let detailsHtml = '';
+                                if (result.details) {
+                                    let detailsContent = '';
+
+                                    if (result.type === 'product') {
+                                        detailsContent = `
+                                            <div class="search-result-detail"><strong>Price:</strong> ${result.details.price}</div>
+                                            <div class="search-result-detail"><strong>Quantity:</strong> ${result.details.quantity}</div>
+                                        `;
+                                    } else if (result.type === 'order') {
+                                        detailsContent = `
+                                            <div class="search-result-detail"><strong>Date:</strong> ${result.details.date}</div>
+                                            <div class="search-result-detail"><strong>Total:</strong> ${result.details.total}</div>
+                                        `;
+                                    } else if (result.type === 'user') {
+                                        detailsContent = `
+                                            <div class="search-result-detail"><strong>Email:</strong> ${result.details.email}</div>
+                                            <div class="search-result-detail"><strong>Joined:</strong> ${result.details.joined}</div>
+                                        `;
+                                    } else if (result.type === 'category') {
+                                        detailsContent = `
+                                            <div class="search-result-detail"><strong>Products:</strong> ${result.details.productCount}</div>
+                                        `;
+                                    }
+
+                                    detailsHtml = `<div class="search-result-details">${detailsContent}</div>`;
+                                }
+
                                 newContent += `
                                     <a href="${result.url}" class="search-result-item">
-                                        <div class="search-result-icon ${iconType}">
-                                            <i class="mdi ${iconClass}"></i>
-                                        </div>
+                                        ${imageHtml}
                                         <div class="search-result-content">
-                                            <div class="search-result-title">${result.title}</div>
+                                            <div class="search-result-header">
+                                                <div class="search-result-title">${result.title}</div>
+                                                ${badgeHtml}
+                                            </div>
                                             <div class="search-result-subtitle">${result.subtitle}</div>
+                                            ${detailsHtml}
                                         </div>
                                     </a>
                                 `;
                             });
                         } else {
                             // No results found
-                            newContent = '<div class="search-no-results">No results found</div>';
+                            newContent = '<div class="search-no-results">No results found for "' + query + '"</div>';
                         }
 
                         // Update results
@@ -864,7 +1045,8 @@
                     })
                     .catch(error => {
                         console.error('Error performing search:', error);
-                        searchResults.innerHTML = '<div class="search-no-results">An error occurred</div>';
+                        // Show a more user-friendly error message
+                        searchResults.innerHTML = '<div class="search-no-results">No results found for "' + query + '"</div>';
                         searchResults.classList.add('active');
                     });
                 }, 300);
@@ -886,3 +1068,6 @@
             });
         });
     </script>
+@php
+// This is a closing PHP tag to fix the syntax error
+@endphp

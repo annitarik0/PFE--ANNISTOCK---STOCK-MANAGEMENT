@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- App Icons -->
-    <link rel="shortcut icon" href="{{asset('admin/assets/images/favicon.ico')}}">
+    <link rel="shortcut icon" href="{{asset('backend/assets/images/img2.jpg.png')}}">
 
     <!-- App css -->
     <link href="{{asset('admin/assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
@@ -458,7 +458,7 @@
             <div class="col-md-6">
                 <div class="order-info-card">
                     <div class="order-info-header">
-                        <h5><i class="mdi mdi-account"></i> Customer Information</h5>
+                        <h5><i class="mdi mdi-account"></i> User Information</h5>
                     </div>
                     <div class="order-info-body">
                         <div class="info-row">

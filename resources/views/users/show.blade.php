@@ -10,7 +10,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
         <!-- App Icons -->
-        <link rel="shortcut icon" href="{{asset('admin/assets/images/favicon.ico')}}">
+        <link rel="shortcut icon" href="{{asset('backend/assets/images/img2.jpg.png')}}">
 
         <!-- morris css -->
         <link rel="stylesheet" href="../plugins/morris/morris.css">
@@ -35,11 +35,11 @@
         </div>
         @include('header-dash')
         @include('components.notification')
-        
+
         <div class="user-form-wrapper">
             <div class="user-view-form">
                 <h2 class="form-title">User Profile</h2>
-                
+
                 <div class="form-group text-center">
                     @if($user->image)
                         <img src="{{ asset($user->image) }}" alt="{{ $user->name }}" style="max-width: 150px; height: 150px; border-radius: 50%; object-fit: cover;">
@@ -49,7 +49,7 @@
                         </div>
                     @endif
                 </div>
-                
+
                 <div class="form-group">
                     <label>Full Name</label>
                     <div class="form-control-static">{{ $user->name }}</div>
@@ -73,7 +73,7 @@
                 <div class="form-actions">
                     <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">Edit User</a>
                     <a href="{{ route('users.index') }}" class="btn btn-secondary">Back to Users</a>
-                    
+
                     <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display: inline-block;">
                         @csrf
                         @method('DELETE')

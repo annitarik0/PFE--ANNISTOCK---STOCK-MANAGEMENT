@@ -10,7 +10,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
         <!-- App Icons -->
-        <link rel="shortcut icon" href="{{asset('admin/assets/images/favicon.ico')}}">
+        <link rel="shortcut icon" href="{{asset('backend/assets/images/img2.jpg.png')}}">
 
         <!-- morris css -->
         <link rel="stylesheet" href="../plugins/morris/morris.css">
@@ -1201,7 +1201,7 @@
                 <!-- ADMIN DETAILED INSIGHTS SECTION -->
                 <!-- ADDITIONAL INSIGHTS SECTION -->
                 <div class="row equal-height">
-                    <!-- INVENTORY INSIGHTS -->
+                    <!-- INVENTORY INSIGHTS WITH CHARTS -->
                     <div class="col-xl-6">
                         <div class="card">
                             <div class="card-body">
@@ -1221,6 +1221,7 @@
                                     </div>
                                 </div>
 
+                                <!-- Product Distribution by Category Chart -->
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="card mb-3 border-0 shadow-sm">
@@ -1232,23 +1233,12 @@
                                                         </span>
                                                     </div>
                                                     <div>
-                                                        <h5 class="font-16 mb-0">Stock Status</h5>
+                                                        <h5 class="font-16 mb-0">Products by Category</h5>
                                                     </div>
                                                 </div>
-                                                <div class="progress mb-2" style="height: 8px;">
-                                                    @php
-                                                        $inStockPercent = $productCount > 0 ? (($productCount - $outOfStockCount - $lowStockCount) / $productCount) * 100 : 0;
-                                                        $lowStockPercent = $productCount > 0 ? ($lowStockCount / $productCount) * 100 : 0;
-                                                        $outOfStockPercent = $productCount > 0 ? ($outOfStockCount / $productCount) * 100 : 0;
-                                                    @endphp
-                                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ $inStockPercent }}%"></div>
-                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $lowStockPercent }}%"></div>
-                                                    <div class="progress-bar bg-danger" role="progressbar" style="width: {{ $outOfStockPercent }}%"></div>
-                                                </div>
-                                                <div class="d-flex justify-content-between">
-                                                    <small class="font-weight-medium"><i class="mdi mdi-circle text-success"></i> In Stock ({{ $productCount - $outOfStockCount - $lowStockCount }})</small>
-                                                    <small class="font-weight-medium"><i class="mdi mdi-circle text-warning"></i> Low Stock ({{ $lowStockCount }})</small>
-                                                    <small class="font-weight-medium"><i class="mdi mdi-circle text-danger"></i> Out ({{ $outOfStockCount }})</small>
+                                                <div class="chart-container premium-chart">
+                                                    <canvas id="categoryDistributionChart"></canvas>
+                                                    <div class="chart-overlay"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1264,30 +1254,19 @@
                                                         </span>
                                                     </div>
                                                     <div>
-                                                        <h5 class="font-16 mb-0">Categories</h5>
+                                                        <h5 class="font-16 mb-0">Stock Status</h5>
                                                     </div>
                                                 </div>
-                                                <div class="d-flex align-items-center mb-2">
-                                                    <div class="flex-grow-1">
-                                                        <div class="progress" style="height: 8px;">
-                                                            <div class="progress-bar bg-info" role="progressbar" style="width: 100%"></div>
-                                                        </div>
-                                                    </div>
-                                                    <span class="ml-2 font-weight-bold">{{ $categoryCount }}</span>
-                                                </div>
-                                                <div class="mt-2">
-                                                    @if($topCategory)
-                                                        <small class="d-block font-weight-medium"><i class="mdi mdi-star text-warning"></i> Top: {{ $topCategory->name }} ({{ $topCategoryProductCount }} products)</small>
-                                                    @endif
-                                                    <small class="d-block font-weight-medium"><i class="mdi mdi-information-outline text-info"></i> Avg: {{ $avgProductsPerCategory }} products per category</small>
+                                                <div class="chart-container premium-chart">
+                                                    <canvas id="stockStatusChart"></canvas>
+                                                    <div class="chart-overlay"></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-
-
+                                <!-- Inventory Alerts -->
                                 <div class="card border-0 shadow-sm">
                                     <div class="card-body p-3">
                                         <div class="d-flex justify-content-between align-items-center mb-3">
@@ -1332,15 +1311,13 @@
                                                 </div>
                                             </div>
                                         </div>
-
-
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- ORDER & REVENUE INSIGHTS -->
+                    <!-- ORDER & REVENUE INSIGHTS WITH CHARTS -->
                     <div class="col-xl-6">
                         <div class="card">
                             <div class="card-body">
@@ -1369,23 +1346,12 @@
                                                         </span>
                                                     </div>
                                                     <div>
-                                                        <h5 class="font-16 mb-0">Order Status</h5>
+                                                        <h5 class="font-16 mb-0">Orders by Status</h5>
                                                     </div>
                                                 </div>
-                                                <div class="progress mb-2" style="height: 8px;">
-                                                    @php
-                                                        $completedPercent = $orderCount > 0 ? ($completedOrderCount / $orderCount) * 100 : 0;
-                                                        $pendingPercent = $orderCount > 0 ? ($pendingOrderCount / $orderCount) * 100 : 0;
-                                                        $otherPercent = 100 - $completedPercent - $pendingPercent;
-                                                    @endphp
-                                                    <div class="progress-bar bg-success" role="progressbar" style="width: {{ $completedPercent }}%"></div>
-                                                    <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $pendingPercent }}%"></div>
-                                                    <div class="progress-bar bg-info" role="progressbar" style="width: {{ $otherPercent }}%"></div>
-                                                </div>
-                                                <div class="d-flex justify-content-between">
-                                                    <small class="font-weight-medium"><i class="mdi mdi-circle text-success"></i> Completed ({{ $completedOrderCount }})</small>
-                                                    <small class="font-weight-medium"><i class="mdi mdi-circle text-warning"></i> Pending ({{ $pendingOrderCount }})</small>
-                                                    <small class="font-weight-medium"><i class="mdi mdi-circle text-info"></i> Other ({{ $orderCount - $completedOrderCount - $pendingOrderCount }})</small>
+                                                <div class="chart-container premium-chart">
+                                                    <canvas id="orderStatusChart"></canvas>
+                                                    <div class="chart-overlay"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1401,22 +1367,12 @@
                                                         </span>
                                                     </div>
                                                     <div>
-                                                        <h5 class="font-16 mb-0">Revenue Metrics</h5>
+                                                        <h5 class="font-16 mb-0">Revenue Trend</h5>
                                                     </div>
                                                 </div>
-                                                <div class="d-flex align-items-center mb-2">
-                                                    <div class="flex-grow-1">
-                                                        <div class="progress" style="height: 8px;">
-                                                            <div class="progress-bar bg-primary" role="progressbar" style="width: {{ $revenuePercentChange > 0 ? 100 : 50 }}%"></div>
-                                                        </div>
-                                                    </div>
-                                                    <span class="ml-2 font-weight-bold">${{ number_format($totalRevenue, 0) }}</span>
-                                                </div>
-                                                <div class="mt-2">
-                                                    <div class="d-flex justify-content-between">
-                                                        <small class="font-weight-medium"><i class="mdi mdi-calendar text-info"></i> Monthly: ${{ number_format($lastMonthRevenue, 0) }}</small>
-                                                        <small class="font-weight-medium"><i class="mdi mdi-cart-plus text-success"></i> Avg Order: ${{ $orderCount > 0 ? number_format($totalRevenue / $orderCount, 2) : '0.00' }}</small>
-                                                    </div>
+                                                <div class="chart-container premium-chart">
+                                                    <canvas id="revenueTrendChart"></canvas>
+                                                    <div class="chart-overlay"></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -1437,7 +1393,7 @@
                                             <thead>
                                                 <tr>
                                                     <th class="border-top-0">Order</th>
-                                                    <th class="border-top-0">Customer</th>
+                                                    <th class="border-top-0">User</th>
                                                     <th class="border-top-0">Date</th>
                                                     <th class="border-top-0">Amount</th>
                                                     <th class="border-top-0">Status</th>
@@ -1900,15 +1856,602 @@
         <script src="{{asset('admin/assets/js/waves.js')}}"></script>
         <script src="{{asset('admin/assets/js/jquery.slimscroll.js')}}"></script>
 
+        <!-- Chart.js and ChartJS plugins -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+
         <!--Morris Chart-->
-        <script src="../plugins/morris/morris.min.js')}}"></script>
-        <script src="../plugins/raphael/raphael.min.js')}}"></script>
+        <script src="{{asset('plugins/morris/morris.min.js')}}"></script>
+        <script src="{{asset('plugins/raphael/raphael.min.js')}}"></script>
 
         <!-- dashboard js -->
         <script src="{{asset('admin/assets/pages/dashboard.int.js')}}"></script>
 
         <!-- App js -->
         <script src="{{asset('admin/assets/js/app.js')}}"></script>
+
+        @if(Auth::check() && is_object(Auth::user()) && Auth::user()->isAdmin())
+        <!-- Clean Chart Styles -->
+        <style>
+            /* Chart Container */
+            .chart-container {
+                position: relative;
+                height: 220px;
+                margin: 0 auto;
+                border-radius: 6px;
+                overflow: hidden;
+            }
+
+            .premium-chart {
+                background: #fff;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                padding: 10px;
+                border: 1px solid rgba(0,0,0,0.05);
+                transition: all 0.3s ease;
+            }
+
+            .premium-chart:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            }
+
+            .chart-overlay {
+                display: none; /* Simplified - removed overlay effect */
+            }
+
+            .chart-container canvas {
+                transition: all 0.3s ease;
+            }
+
+            /* Chart Legend */
+            .chart-legend {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                margin-top: 10px;
+            }
+
+            .legend-item {
+                display: flex;
+                align-items: center;
+                margin: 0 8px 5px 0;
+                font-size: 12px;
+                font-weight: 500;
+            }
+
+            .legend-color {
+                width: 10px;
+                height: 10px;
+                border-radius: 2px;
+                margin-right: 4px;
+            }
+
+            /* Chart Tooltip */
+            .chart-tooltip {
+                background: rgba(50, 50, 50, 0.8) !important;
+                border-radius: 4px !important;
+                padding: 8px 10px !important;
+                color: white !important;
+                font-weight: 500 !important;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+                border: none !important;
+            }
+
+            /* Card Header Enhancement - simplified */
+            .card-body .avatar-sm {
+                transition: all 0.2s ease;
+            }
+
+            .card:hover .avatar-sm {
+                transform: scale(1.05);
+            }
+
+            /* Font Enhancement - simplified */
+            .font-16 {
+                font-weight: 500;
+            }
+
+            /* Removed chart title animation for simplicity */
+        </style>
+
+        <!-- Initialize Charts -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                // Register Chart.js plugins
+                Chart.register(ChartDataLabels);
+
+                // Set simple tooltip styles
+                Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(50, 50, 50, 0.8)';
+                Chart.defaults.plugins.tooltip.titleColor = '#fff';
+                Chart.defaults.plugins.tooltip.bodyColor = '#fff';
+                Chart.defaults.plugins.tooltip.padding = 8;
+                Chart.defaults.plugins.tooltip.cornerRadius = 4;
+                Chart.defaults.plugins.tooltip.displayColors = true;
+
+                // Common chart options - simplified
+                const commonOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 800,
+                        easing: 'easeOutQuad'
+                    },
+                    hover: {
+                        mode: 'nearest',
+                        intersect: false
+                    },
+                    plugins: {
+                        tooltip: {
+                            enabled: true,
+                            position: 'nearest',
+                            displayColors: true,
+                            usePointStyle: true
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                boxWidth: 12,
+                                padding: 15,
+                                usePointStyle: true
+                            }
+                        },
+                        datalabels: {
+                            color: '#fff',
+                            font: {
+                                weight: 'bold',
+                                size: 11
+                            },
+                            textStrokeColor: 'rgba(0,0,0,0.2)',
+                            textStrokeWidth: 2
+                        }
+                    }
+                };
+
+                // Professional color palette
+                const colorPalette = {
+                    primary: ['rgba(75, 108, 183, 0.8)', 'rgba(75, 108, 183, 1)'],
+                    success: ['rgba(2, 197, 141, 0.8)', 'rgba(2, 197, 141, 1)'],
+                    warning: ['rgba(255, 190, 11, 0.8)', 'rgba(255, 190, 11, 1)'],
+                    danger: ['rgba(241, 85, 108, 0.8)', 'rgba(241, 85, 108, 1)'],
+                    info: ['rgba(56, 164, 248, 0.8)', 'rgba(56, 164, 248, 1)'],
+                    purple: ['rgba(111, 66, 193, 0.8)', 'rgba(111, 66, 193, 1)'],
+                    teal: ['rgba(32, 201, 151, 0.8)', 'rgba(32, 201, 151, 1)'],
+                    orange: ['rgba(253, 126, 20, 0.8)', 'rgba(253, 126, 20, 1)']
+                };
+
+                // Stock Status Chart
+                const stockStatusCtx = document.getElementById('stockStatusChart').getContext('2d');
+                const stockStatusData = [
+                    {{ $productCount - $outOfStockCount - $lowStockCount }},
+                    {{ $lowStockCount }},
+                    {{ $outOfStockCount }}
+                ];
+
+                // Simple center text plugin for doughnut charts
+                const centerTextPlugin = {
+                    id: 'centerText',
+                    beforeDraw: function(chart) {
+                        if (chart.config.type === 'doughnut' || chart.config.type === 'pie') {
+                            const ctx = chart.ctx;
+                            const chartArea = chart.chartArea;
+                            if (!chartArea) return;
+
+                            const dataset = chart.data.datasets[0];
+                            const total = dataset.data.reduce((a, b) => a + b, 0);
+
+                            ctx.save();
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'middle';
+
+                            const centerX = (chartArea.left + chartArea.right) / 2;
+                            const centerY = (chartArea.top + chartArea.bottom) / 2;
+
+                            ctx.font = 'bold 18px Arial, sans-serif';
+                            ctx.fillStyle = '#333';
+                            ctx.fillText(total, centerX, centerY);
+
+                            ctx.restore();
+                        }
+                    }
+                };
+
+                // Register the plugin
+                Chart.register(centerTextPlugin);
+
+                // Simplified Stock Status Chart
+                const stockStatusChart = new Chart(stockStatusCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['In Stock', 'Low Stock', 'Out of Stock'],
+                        datasets: [{
+                            data: stockStatusData,
+                            backgroundColor: [
+                                'rgba(2, 197, 141, 0.7)',
+                                'rgba(255, 190, 11, 0.7)',
+                                'rgba(241, 85, 108, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(2, 197, 141, 1)',
+                                'rgba(255, 190, 11, 1)',
+                                'rgba(241, 85, 108, 1)'
+                            ],
+                            borderWidth: 1,
+                            hoverOffset: 5
+                        }]
+                    },
+                    options: {
+                        ...commonOptions,
+                        cutout: '65%',
+                        plugins: {
+                            ...commonOptions.plugins,
+                            datalabels: {
+                                formatter: (value, ctx) => {
+                                    if (value === 0) return '';
+                                    const sum = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = (value * 100 / sum).toFixed(0) + '%';
+                                    return percentage;
+                                },
+                                display: function(context) {
+                                    const value = context.dataset.data[context.dataIndex];
+                                    const sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = (value * 100 / sum);
+                                    // Only show labels for segments that are at least 8% of the total
+                                    return percentage >= 8;
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = Math.round((value / total) * 100);
+                                        return `${label}: ${value} (${percentage}%)`;
+                                    }
+                                }
+                            },
+                            centerText: {
+                                enabled: true
+                            }
+                        }
+                    }
+                });
+
+                // Category Distribution Chart
+                @php
+                    // Get top 5 categories with product counts
+                    $topCategories = App\Models\Category::withCount('products')
+                        ->orderBy('products_count', 'desc')
+                        ->take(5)
+                        ->get();
+
+                    $categoryLabels = $topCategories->pluck('name')->toJson();
+                    $categoryData = $topCategories->pluck('products_count')->toJson();
+                @endphp
+
+                // Simplified Category Distribution Chart
+                const categoryDistributionCtx = document.getElementById('categoryDistributionChart').getContext('2d');
+
+                const categoryDistributionChart = new Chart(categoryDistributionCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: {!! $categoryLabels !!},
+                        datasets: [{
+                            label: 'Products',
+                            data: {!! $categoryData !!},
+                            backgroundColor: 'rgba(75, 108, 183, 0.7)',
+                            borderColor: 'rgba(75, 108, 183, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            maxBarThickness: 25
+                        }]
+                    },
+                    options: {
+                        ...commonOptions,
+                        indexAxis: 'y',
+                        plugins: {
+                            ...commonOptions.plugins,
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Top Categories',
+                                font: {
+                                    size: 14,
+                                    weight: 'normal'
+                                },
+                                padding: {
+                                    bottom: 10
+                                }
+                            },
+                            datalabels: {
+                                anchor: 'end',
+                                align: 'end',
+                                formatter: (value) => value,
+                                color: '#333',
+                                font: {
+                                    weight: 'bold'
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `Products: ${context.raw}`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            x: {
+                                beginAtZero: true,
+                                ticks: {
+                                    precision: 0
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.05)'
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Order Status Chart
+                const orderStatusCtx = document.getElementById('orderStatusChart').getContext('2d');
+                const processingCount = {{ App\Models\Order::where('status', 'processing')->count() }};
+                const cancelledCount = {{ App\Models\Order::where('status', 'cancelled')->count() }};
+
+                // Simplified Order Status Chart
+                const orderStatusChart = new Chart(orderStatusCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Completed', 'Pending', 'Processing', 'Cancelled'],
+                        datasets: [{
+                            data: [
+                                {{ $completedOrderCount }},
+                                {{ $pendingOrderCount }},
+                                processingCount,
+                                cancelledCount
+                            ],
+                            backgroundColor: [
+                                'rgba(2, 197, 141, 0.7)',
+                                'rgba(255, 190, 11, 0.7)',
+                                'rgba(56, 164, 248, 0.7)',
+                                'rgba(241, 85, 108, 0.7)'
+                            ],
+                            borderColor: [
+                                'rgba(2, 197, 141, 1)',
+                                'rgba(255, 190, 11, 1)',
+                                'rgba(56, 164, 248, 1)',
+                                'rgba(241, 85, 108, 1)'
+                            ],
+                            borderWidth: 1,
+                            hoverOffset: 5
+                        }]
+                    },
+                    options: {
+                        ...commonOptions,
+                        plugins: {
+                            ...commonOptions.plugins,
+                            datalabels: {
+                                formatter: (value, ctx) => {
+                                    if (value === 0) return '';
+                                    const sum = ctx.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = (value * 100 / sum).toFixed(0) + '%';
+                                    return percentage;
+                                },
+                                display: function(context) {
+                                    const value = context.dataset.data[context.dataIndex];
+                                    const sum = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = (value * 100 / sum);
+                                    // Only show labels for segments that are at least 8% of the total
+                                    return percentage >= 8;
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.raw || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = Math.round((value / total) * 100);
+                                        return `${label}: ${value} (${percentage}%)`;
+                                    }
+                                }
+                            },
+                            centerText: {
+                                enabled: true
+                            }
+                        }
+                    }
+                });
+
+                // Revenue Trend Chart
+                @php
+                    // Get monthly revenue for the last 6 months
+                    $months = [];
+                    $monthlyRevenue = [];
+                    $orderCounts = [];
+
+                    for ($i = 5; $i >= 0; $i--) {
+                        $month = now()->subMonths($i);
+                        $months[] = $month->format('M Y');
+
+                        $revenue = App\Models\Order::where('status', 'completed')
+                            ->whereYear('created_at', $month->year)
+                            ->whereMonth('created_at', $month->month)
+                            ->sum('total_amount');
+
+                        $count = App\Models\Order::whereYear('created_at', $month->year)
+                            ->whereMonth('created_at', $month->month)
+                            ->count();
+
+                        $monthlyRevenue[] = $revenue;
+                        $orderCounts[] = $count;
+                    }
+                @endphp
+
+                // Simplified Revenue Trend Chart
+                const revenueTrendCtx = document.getElementById('revenueTrendChart').getContext('2d');
+
+                // Create simple gradient for area fill
+                const gradientFill = revenueTrendCtx.createLinearGradient(0, 0, 0, 220);
+                gradientFill.addColorStop(0, 'rgba(75, 108, 183, 0.2)');
+                gradientFill.addColorStop(1, 'rgba(75, 108, 183, 0.0)');
+
+                const revenueTrendChart = new Chart(revenueTrendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: {!! json_encode($months) !!},
+                        datasets: [
+                            {
+                                label: 'Revenue',
+                                data: {!! json_encode($monthlyRevenue) !!},
+                                backgroundColor: gradientFill,
+                                borderColor: 'rgba(75, 108, 183, 1)',
+                                borderWidth: 2,
+                                tension: 0.3,
+                                fill: true,
+                                pointBackgroundColor: 'rgba(75, 108, 183, 1)',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                order: 1,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: 'Orders',
+                                data: {!! json_encode($orderCounts) !!},
+                                borderColor: 'rgba(2, 197, 141, 1)',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                tension: 0.3,
+                                fill: false,
+                                pointBackgroundColor: 'rgba(2, 197, 141, 1)',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 6,
+                                order: 2,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        ...commonOptions,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
+                        plugins: {
+                            ...commonOptions.plugins,
+                            legend: {
+                                display: true,
+                                position: 'top',
+                                align: 'end'
+                            },
+                            datalabels: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        let value = context.raw || 0;
+
+                                        if (label === 'Revenue') {
+                                            return `${label}: $${value.toFixed(2)}`;
+                                        } else {
+                                            return `${label}: ${value}`;
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                grid: {
+                                    color: 'rgba(0,0,0,0.05)'
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Revenue ($)',
+                                    color: 'rgba(75, 108, 183, 1)',
+                                    font: {
+                                        size: 12,
+                                        weight: 'bold'
+                                    },
+                                    padding: {
+                                        bottom: 10
+                                    }
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value;
+                                    },
+                                    font: {
+                                        size: 11
+                                    }
+                                },
+                                grid: {
+                                    color: 'rgba(0,0,0,0.05)'
+                                }
+                            },
+                            y1: {
+                                beginAtZero: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Orders',
+                                    color: 'rgba(2, 197, 141, 1)',
+                                    font: {
+                                        size: 12,
+                                        weight: 'bold'
+                                    },
+                                    padding: {
+                                        bottom: 10
+                                    }
+                                },
+                                ticks: {
+                                    precision: 0,
+                                    font: {
+                                        size: 11
+                                    }
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Simple hover effect for chart containers
+                const chartContainers = document.querySelectorAll('.chart-container');
+                chartContainers.forEach(container => {
+                    container.addEventListener('mouseover', function() {
+                        this.style.transform = 'translateY(-3px)';
+                        this.style.transition = 'transform 0.3s ease';
+                    });
+
+                    container.addEventListener('mouseout', function() {
+                        this.style.transform = 'translateY(0)';
+                    });
+                });
+            });
+        </script>
+        @endif
 
     </body>
 </html>

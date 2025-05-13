@@ -11,7 +11,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <!-- App Icons -->
-    <link rel="shortcut icon" href="{{asset('admin/assets/images/favicon.ico')}}">
+    <link rel="shortcut icon" href="{{asset('backend/assets/images/img2.jpg.png')}}">
 
     <!-- App css -->
     <link href="{{asset('admin/assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
@@ -183,7 +183,7 @@
             white-space: pre-line;
         }
 
-        .customer-info {
+        .user-info {
             padding: 20px;
             background-color: #f8f9fa;
             border-radius: 8px;
@@ -192,7 +192,7 @@
             align-items: center;
         }
 
-        .customer-avatar {
+        .user-avatar {
             width: 60px;
             height: 60px;
             border-radius: 50%;
@@ -207,30 +207,30 @@
             font-weight: 600;
         }
 
-        .customer-avatar img {
+        .user-avatar img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        .customer-details {
+        .user-details {
             flex: 1;
         }
 
-        .customer-name {
+        .user-name {
             font-size: 18px;
             font-weight: 600;
             color: #333;
             margin-bottom: 5px;
         }
 
-        .customer-email {
+        .user-email {
             font-size: 14px;
             color: #6c757d;
             margin-bottom: 5px;
         }
 
-        .customer-role {
+        .user-role {
             display: inline-flex;
             align-items: center;
             padding: 3px 10px;
@@ -241,7 +241,7 @@
             color: #4b6cb7;
         }
 
-        .customer-role.admin {
+        .user-role.admin {
             background-color: rgba(241, 85, 108, 0.15);
             color: #f1556c;
         }
@@ -579,18 +579,18 @@
                                 </div>
                             @endif
 
-                            <div class="customer-info">
-                                <div class="customer-avatar">
+                            <div class="user-info">
+                                <div class="user-avatar">
                                     @if($order->user->image)
                                         <img src="{{ asset($order->user->image) }}" alt="{{ $order->user->name }}">
                                     @else
                                         {{ substr($order->user->name, 0, 1) }}
                                     @endif
                                 </div>
-                                <div class="customer-details">
-                                    <div class="customer-name">{{ $order->user->name }}</div>
-                                    <div class="customer-email">{{ $order->user->email }}</div>
-                                    <div class="customer-role {{ $order->user->role === 'admin' ? 'admin' : '' }}">
+                                <div class="user-details">
+                                    <div class="user-name">{{ $order->user->name }}</div>
+                                    <div class="user-email">{{ $order->user->email }}</div>
+                                    <div class="user-role {{ $order->user->role === 'admin' ? 'admin' : '' }}">
                                         @if($order->user->role === 'admin')
                                             <i class="mdi mdi-shield-account mr-1"></i> Administrator
                                         @else

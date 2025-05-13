@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 
     <!-- App Icons -->
-    <link rel="shortcut icon" href="{{ asset('backend/assets/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('backend/assets/images/img2.jpg.png') }}">
 
     <!-- App css -->
     <link href="{{ asset('backend/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
@@ -35,51 +35,51 @@
             min-height: 80vh;
             margin-top: 70px;
         }
-        
+
         .card {
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
         }
-        
+
         .card-header {
             background-color: #f8f9fa;
             border-bottom: 1px solid #eaeaea;
             padding: 15px 20px;
         }
-        
+
         .card-body {
             padding: 20px;
         }
-        
+
         .btn-primary {
             background-color: #4e73df;
             border-color: #4e73df;
         }
-        
+
         .btn-primary:hover {
             background-color: #2e59d9;
             border-color: #2e59d9;
         }
-        
+
         .table th {
             font-weight: 600;
             background-color: #f8f9fa;
         }
-        
+
         .badge {
             font-weight: 500;
             padding: 5px 10px;
             border-radius: 4px;
         }
-        
+
         @media (max-width: 768px) {
             .content-page {
                 margin-left: 0;
             }
         }
     </style>
-    
+
     @yield('styles')
 </head>
 
@@ -120,7 +120,7 @@
         $(document).ready(function() {
             // Initialize DataTables
             $('.datatable').DataTable();
-            
+
             // Initialize Toastr
             toastr.options = {
                 "closeButton": true,
@@ -135,26 +135,26 @@
                 "showMethod": "fadeIn",
                 "hideMethod": "fadeOut"
             };
-            
+
             // Display flash messages
             @if(session('success'))
                 toastr.success("{{ session('success') }}");
             @endif
-            
+
             @if(session('error'))
                 toastr.error("{{ session('error') }}");
             @endif
-            
+
             @if(session('info'))
                 toastr.info("{{ session('info') }}");
             @endif
-            
+
             @if(session('warning'))
                 toastr.warning("{{ session('warning') }}");
             @endif
         });
     </script>
-    
+
     @yield('scripts')
 </body>
 </html>
