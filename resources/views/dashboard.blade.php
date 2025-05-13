@@ -2389,11 +2389,14 @@
                                     text: 'Revenue ($)',
                                     color: 'rgba(75, 108, 183, 1)',
                                     font: {
-                                        size: 12,
+                                        size: 14,
                                         weight: 'bold'
                                     },
+                                    align: 'center',
                                     padding: {
-                                        bottom: 10
+                                        top: 0,
+                                        bottom: 20,
+                                        left: 0
                                     }
                                 },
                                 ticks: {
@@ -2401,8 +2404,11 @@
                                         return '$' + value;
                                     },
                                     font: {
-                                        size: 11
-                                    }
+                                        size: 12,
+                                        weight: '500'
+                                    },
+                                    padding: 8,
+                                    color: 'rgba(75, 108, 183, 0.8)'
                                 },
                                 grid: {
                                     color: 'rgba(0,0,0,0.05)'
@@ -2416,18 +2422,24 @@
                                     text: 'Orders',
                                     color: 'rgba(2, 197, 141, 1)',
                                     font: {
-                                        size: 12,
+                                        size: 14,
                                         weight: 'bold'
                                     },
+                                    align: 'center',
                                     padding: {
-                                        bottom: 10
+                                        top: 0,
+                                        bottom: 20,
+                                        left: 0
                                     }
                                 },
                                 ticks: {
                                     precision: 0,
                                     font: {
-                                        size: 11
-                                    }
+                                        size: 12,
+                                        weight: '500'
+                                    },
+                                    padding: 8,
+                                    color: 'rgba(2, 197, 141, 0.8)'
                                 },
                                 grid: {
                                     display: false
