@@ -2430,20 +2430,9 @@
                                     }
                                 }
                             },
-                            // Add a title to show axis information
+                            // Chart title - removed axis information text
                             title: {
-                                display: true,
-                                text: ['Revenue ($) on left axis', 'Orders on right axis'],
-                                position: 'top',
-                                color: '#333',
-                                font: {
-                                    size: 13,
-                                    weight: 'bold'
-                                },
-                                padding: {
-                                    top: 10,
-                                    bottom: 15
-                                }
+                                display: false
                             }
                         },
                         scales: {
