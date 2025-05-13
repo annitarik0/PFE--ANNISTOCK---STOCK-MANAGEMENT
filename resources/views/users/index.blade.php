@@ -219,18 +219,7 @@
                 color: #6c757d;
             }
 
-            .status-badge {
-                display: inline-block;
-                padding: 5px 12px;
-                border-radius: 20px;
-                font-size: 12px;
-                font-weight: 600;
-            }
 
-            .status-active {
-                background-color: rgba(2, 197, 141, 0.15);
-                color: #02c58d;
-            }
         </style>
     </head>
 
@@ -277,9 +266,8 @@
                                     <th width="10%">Image</th>
                                     <th width="20%">Name</th>
                                     <th width="25%">Email</th>
-                                    <th width="10%">Role</th>
-                                    <th width="10%">Status</th>
-                                    <th width="20%">Actions</th>
+                                    <th width="15%">Role</th>
+                                    <th width="25%">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -306,7 +294,6 @@
                                             <span class="role-badge role-user">{{ ucfirst($user->role) }}</span>
                                         @endif
                                     </td>
-                                    <td><span class="status-badge status-active">Active</span></td>
                                     <td>
                                         <div class="action-buttons">
                                             <a href="{{ route('users.edit', $user->id) }}" class="btn-edit">
