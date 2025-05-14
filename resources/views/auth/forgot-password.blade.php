@@ -68,6 +68,13 @@
                         <form method="POST" action="{{ route('password.email') }}">
                         @csrf
                             <input class="form-control" type="email" id="email" name="email" placeholder="E-mail Address" required style="background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);">
+
+                            @error('email')
+                                <div class="alert alert-danger mt-2">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+
                             <div class="form-button full-width">
                                 <button
                                 id="submit"

@@ -33,6 +33,12 @@ Route::middleware('guest')->group(function () {
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
         ->name('password.store');
+
+    // Password reset confirmation page
+    Route::get('password-reset-confirmation', function(\Illuminate\Http\Request $request) {
+        $email = $request->query('email', '');
+        return view('auth.password-reset-confirmation', ['email' => $email]);
+    })->name('password.confirmation');
 });
 
 Route::middleware('auth')->group(function () {

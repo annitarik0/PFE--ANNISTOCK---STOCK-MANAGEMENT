@@ -32,6 +32,7 @@ Route::middleware(['auth', \App\Http\Middleware\HandleAuthErrors::class])->group
 });
 
 require __DIR__.'/auth.php';
+require __DIR__.'/test.php';
 
 // Routes that require authentication
 Route::middleware(['auth', \App\Http\Middleware\HandleAuthErrors::class])->group(function () {
