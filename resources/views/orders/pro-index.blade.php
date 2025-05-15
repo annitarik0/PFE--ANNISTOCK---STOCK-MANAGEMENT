@@ -371,7 +371,7 @@
 </head>
 
 <body>
-    <!-- Loader -->
+    <!-- Page Loader -->
     <div id="preloader">
         <div id="status">
             <div class="spinner">
@@ -746,6 +746,38 @@
                     $('#orders-list').removeClass('fade-transition');
                 }, 300);
             });
+
+            // Add page transition loader for all links
+            $('a').on('click', function() {
+                // Don't show loader for links that open in new tabs or for javascript links
+                if ($(this).attr('target') === '_blank' ||
+                    $(this).attr('href') === undefined ||
+                    $(this).attr('href').startsWith('#') ||
+                    $(this).attr('href').startsWith('javascript:')) {
+                    return true;
+                }
+
+                // Show the standard preloader
+                $('#preloader').show();
+                $('#status').show();
+
+                // Let the link navigate normally
+                return true;
+            });
+
+            // Show loader when form is submitted
+            $('form').on('submit', function() {
+                // Show the standard preloader
+                $('#preloader').show();
+                $('#status').show();
+                return true;
+            });
+
+            // Check if we came from a redirect (success message)
+            if (window.location.href.indexOf('success') > -1) {
+                // Flash the success message
+                $('.success-alert').fadeIn(300).delay(3000).fadeOut(500);
+            }
         });
     </script>
 </body>

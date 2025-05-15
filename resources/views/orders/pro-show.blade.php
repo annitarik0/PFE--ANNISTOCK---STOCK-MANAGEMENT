@@ -513,13 +513,6 @@
 
                                 <div class="order-info-item">
                                     <div class="order-info-label">
-                                        <i class="mdi mdi-tag-text-outline"></i> Order Name
-                                    </div>
-                                    <div class="order-info-value">{{ $order->name ?? 'Order #' . $order->id }}</div>
-                                </div>
-
-                                <div class="order-info-item">
-                                    <div class="order-info-label">
                                         <i class="mdi mdi-calendar"></i> Date
                                     </div>
                                     <div class="order-info-value">{{ $order->created_at->format('M d, Y') }}</div>
@@ -646,7 +639,7 @@
                 </div>
 
                 <div class="col-lg-4">
-                    @if(Auth::check() && is_object(Auth::user()) && Auth::user()->isAdmin())
+                    @if(Auth::check() && is_object(Auth::user()) && (Auth::user()->isAdmin() || Auth::id() === $order->user_id))
                         <div class="order-card">
                             <div class="card-header">
                                 <h5><i class="mdi mdi-pencil"></i> Update Order Status</h5>
@@ -656,12 +649,6 @@
                                 <form action="{{ route('orders.update', $order) }}" method="POST">
                                     @csrf
                                     @method('PUT')
-
-                                    <div class="form-group">
-                                        <label for="name" class="form-label">Order Name (Optional)</label>
-                                        <input type="text" name="name" id="name" class="form-control" value="{{ $order->name }}" placeholder="Enter a custom name for this order">
-                                        <small class="form-text text-muted">If left blank, the order will be named "Order #{{ $order->id }}"</small>
-                                    </div>
 
                                     <div class="form-group">
                                         <label for="status" class="form-label">Order Status</label>

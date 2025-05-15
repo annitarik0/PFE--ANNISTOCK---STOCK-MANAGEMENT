@@ -635,6 +635,32 @@
             font-style: italic;
         }
 
+        /* Sticky order summary styling */
+        .sticky-summary-wrapper {
+            position: sticky;
+            top: 140px; /* Position below the header (topbar + navbar height) */
+            transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1); /* Super smooth easing */
+            z-index: 1020; /* Below header (1030) but above other content */
+            margin-top: -20px; /* Adjust initial position */
+        }
+
+        /* Add smooth shadow when sticky */
+        .sticky-summary-wrapper.is-sticky .order-summary-card {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            transform: translateY(0);
+        }
+
+        /* Smooth transition for the card */
+        .order-summary-card {
+            transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+            will-change: transform, box-shadow; /* Performance optimization */
+        }
+
+        /* Ensure the header is above the sticky summary */
+        #topnav {
+            z-index: 1030 !important;
+        }
+
         .category-filter {
             margin-bottom: 20px;
             display: flex;
@@ -667,7 +693,7 @@
 </head>
 
 <body>
-    <!-- Loader -->
+    <!-- Page Loader -->
     <div id="preloader">
         <div id="status">
             <div class="spinner">
@@ -708,6 +734,25 @@
 
                 <div class="row">
                     <div class="col-lg-8">
+                        <div class="order-form-card mb-4">
+                            <div class="card-header">
+                                <h5><i class="mdi mdi-account-outline"></i> Order Information</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="name">Customer Name</label>
+                                    <input type="text" name="name" id="name" class="form-control"
+                                        placeholder="Enter customer name or order purpose" value="{{ old('name') }}">
+                                    <small class="form-text text-muted">
+                                        If left blank, the order will be named "Order #ID"
+                                    </small>
+                                </div>
+
+                                <!-- Hidden field to ensure name is submitted even if empty -->
+                                <input type="hidden" name="name_submitted" value="1">
+                            </div>
+                        </div>
+
                         <div class="order-form-card">
                             <div class="card-header">
                                 <h5><i class="mdi mdi-package-variant"></i> Select Products</h5>
@@ -765,41 +810,41 @@
                     </div>
 
                     <div class="col-lg-4">
-                        <div class="order-form-card order-summary-card">
-                            <div class="card-header">
-                                <h5><i class="mdi mdi-clipboard-text-outline"></i> Order Summary</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="selected-products">
-                                    <table class="selected-products-table" id="selectedProductsTable">
-                                        <thead>
-                                            <tr>
-                                                <th style="width: 35%;">Product</th>
-                                                <th style="width: 30%;">Qty</th>
-                                                <th style="width: 20%;">Price</th>
-                                                <th style="width: 15%;"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="selectedProductsList">
-                                            <tr id="emptySelectionRow">
-                                                <td colspan="4" class="empty-selection">No products selected</td>
-                                            </tr>
-                                        </tbody>
-                                        <tfoot>
-                                            <tr class="total-row">
-                                                <th colspan="4" class="text-center">
-                                                    <div style="margin-bottom: 10px; font-size: 16px;">Total Amount</div>
-                                                    <div class="total-amount" id="totalAmount">$0.00</div>
-                                                </th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
+                        <div class="sticky-summary-wrapper">
+                            <div class="order-form-card order-summary-card">
+                                <div class="card-header">
+                                    <h5><i class="mdi mdi-clipboard-text-outline"></i> Order Summary</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="selected-products">
+                                        <table class="selected-products-table" id="selectedProductsTable">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width: 35%;">Product</th>
+                                                    <th style="width: 30%;">Qty</th>
+                                                    <th style="width: 20%;">Price</th>
+                                                    <th style="width: 15%;"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="selectedProductsList">
+                                                <tr id="emptySelectionRow">
+                                                    <td colspan="4" class="empty-selection">No products selected</td>
+                                                </tr>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr class="total-row">
+                                                    <th colspan="4" class="text-center">
+                                                        <div style="margin-bottom: 10px; font-size: 16px;">Total Amount</div>
+                                                        <div class="total-amount" id="totalAmount">$0.00</div>
+                                                    </th>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
 
-                                    <!-- Removed notes field as it doesn't exist in the database -->
-
-                                    <button type="submit" class="btn-create-order" id="submitOrder" disabled>
-                                        <i class="mdi mdi-check-circle"></i> Create Order
-                                    </button>
+                                        <button type="submit" class="btn-create-order mt-4" id="submitOrder" disabled>
+                                            <i class="mdi mdi-check-circle"></i> Create Order
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -820,7 +865,66 @@
 
     <script>
         $(document).ready(function() {
-            // Let's try a simpler approach - direct form submission without AJAX
+            // Sticky order summary scroll behavior with ultra-smooth animation
+            const stickyWrapper = $('.sticky-summary-wrapper');
+            const headerHeight = 140; // Combined height of topbar and navbar
+            let lastScrollTop = 0;
+            let ticking = false;
+
+            // Function to handle scroll effects with smoother animation
+            function handleScroll() {
+                const scrollTop = $(window).scrollTop();
+                const topOffset = headerHeight - scrollTop > 0 ? headerHeight - scrollTop : 0;
+
+                // Always keep the summary right below the header
+                if (scrollTop > 0) {
+                    if (!stickyWrapper.hasClass('is-sticky')) {
+                        stickyWrapper.addClass('is-sticky');
+                    }
+
+                    // Ensure it stays below the header
+                    stickyWrapper.css('top', `${headerHeight}px`);
+
+                    // Calculate a very subtle parallax effect for extra smoothness
+                    // This creates a slight "elastic" feel as you scroll
+                    const scrollDelta = scrollTop - lastScrollTop;
+                    const elasticFactor = scrollDelta * 0.02; // Reduced for subtler effect
+                    const limitedElastic = Math.max(Math.min(elasticFactor, 3), -3); // Smaller range
+
+                    // Apply the transform with requestAnimationFrame for smoother animation
+                    requestAnimationFrame(() => {
+                        // Apply a subtle elastic effect
+                        if (Math.abs(scrollDelta) > 5) { // Only apply for significant scrolling
+                            stickyWrapper.css('transform', `translateY(${limitedElastic}px)`);
+
+                            // Reset the transform after a short delay for the elastic effect
+                            setTimeout(() => {
+                                stickyWrapper.css('transform', 'translateY(0)');
+                            }, 300);
+                        }
+                    });
+                } else {
+                    stickyWrapper.removeClass('is-sticky');
+                }
+
+                lastScrollTop = scrollTop;
+                ticking = false;
+            }
+
+            // Use requestAnimationFrame for smoother scrolling
+            $(window).on('scroll', function() {
+                if (!ticking) {
+                    requestAnimationFrame(() => {
+                        handleScroll();
+                    });
+                    ticking = true;
+                }
+            });
+
+            // Initial call to set correct state
+            handleScroll();
+
+            // Direct form submission without AJAX
             $('#order-create-form').on('submit', function(e) {
                 // Don't prevent default form submission
 
@@ -830,10 +934,39 @@
                     return false;
                 }
 
-                // Show loading indicator
+                // Log the form data for debugging
+                console.log('Form data:', {
+                    name: $('#name').val(),
+                    products: $('input[name="product_ids[]"]').map(function() { return $(this).val(); }).get(),
+                    quantities: $('input[name="quantities[]"]').map(function() { return $(this).val(); }).get()
+                });
+
+                // Show loading indicator on button
                 $('#submitOrder').prop('disabled', true).html('<i class="mdi mdi-loading mdi-spin"></i> Processing...');
 
+                // Show the standard preloader
+                $('#preloader').show();
+                $('#status').show();
+
                 // Let the form submit normally
+                return true;
+            });
+
+            // Add page transition loader for all links
+            $('a').on('click', function() {
+                // Don't show loader for links that open in new tabs or for javascript links
+                if ($(this).attr('target') === '_blank' ||
+                    $(this).attr('href') === undefined ||
+                    $(this).attr('href').startsWith('#') ||
+                    $(this).attr('href').startsWith('javascript:')) {
+                    return true;
+                }
+
+                // Show the standard preloader
+                $('#preloader').show();
+                $('#status').show();
+
+                // Let the link navigate normally
                 return true;
             });
             // Product selection

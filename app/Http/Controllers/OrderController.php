@@ -218,20 +218,34 @@ class OrderController extends Controller
             'user_role' => Auth::user() ? Auth::user()->role : 'unknown'
         ]);
 
-        // Only admins can update orders
-        if (!Auth::user()->isAdmin()) {
+        // Check if user is authorized to update this order
+        // Admins can update any order, employees can only update their own orders
+        $isAdmin = Auth::user()->isAdmin();
+        $isOrderCreator = Auth::id() === $order->user_id;
+
+        if (!$isAdmin && !$isOrderCreator) {
             \Log::warning('Unauthorized order update attempt', [
                 'user_id' => Auth::id(),
-                'order_id' => $order->id
+                'user_role' => Auth::user()->role,
+                'order_id' => $order->id,
+                'order_user_id' => $order->user_id
             ]);
 
             if ($request->ajax()) {
-                return response()->json(['error' => 'You are not authorized to update orders.'], 403);
+                return response()->json(['error' => 'You are not authorized to update this order.'], 403);
             }
 
             return redirect()->route('orders.index')
-                ->with('error', 'You are not authorized to update orders.');
+                ->with('error', 'You can only update orders that you created.');
         }
+
+        \Log::info('Authorized order status update attempt', [
+            'user_id' => Auth::id(),
+            'user_role' => Auth::user()->role,
+            'order_id' => $order->id,
+            'is_admin' => $isAdmin,
+            'is_order_creator' => $isOrderCreator
+        ]);
 
         // Validate the request with enhanced logging
         \Log::info('Validating order update request', [

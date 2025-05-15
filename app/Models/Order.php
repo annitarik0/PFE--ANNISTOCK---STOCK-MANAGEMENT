@@ -67,9 +67,18 @@ class Order extends Model
     {
         // Check if the name attribute exists and has a value
         if (isset($this->attributes['name']) && !empty($this->attributes['name'])) {
+            // Log for debugging
+            \Log::debug('Order display name from custom name', [
+                'order_id' => $this->id,
+                'name' => $this->attributes['name']
+            ]);
             return $this->attributes['name'];
         }
 
+        // Log for debugging
+        \Log::debug('Order display name using default format', [
+            'order_id' => $this->id
+        ]);
         return 'Order #' . $this->id;
     }
 }
