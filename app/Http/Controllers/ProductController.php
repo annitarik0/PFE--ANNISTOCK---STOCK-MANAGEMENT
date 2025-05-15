@@ -421,6 +421,19 @@ class ProductController extends Controller
                 ->get();
             $title = 'Out of Stock Products';
             $filterType = 'out-of-stock';
+        } elseif ($status === 'all-alerts') {
+            // Show both low stock and out of stock items
+            $products = Product::with('category')
+                ->where(function($query) use ($lowStockThreshold) {
+                    $query->where('quantity', '=', 0)
+                          ->orWhere(function($query) use ($lowStockThreshold) {
+                              $query->where('quantity', '>', 0)
+                                    ->where('quantity', '<=', $lowStockThreshold);
+                          });
+                })
+                ->get();
+            $title = 'Inventory Alerts';
+            $filterType = 'all-alerts';
         } else {
             return redirect()->route('products.index');
         }

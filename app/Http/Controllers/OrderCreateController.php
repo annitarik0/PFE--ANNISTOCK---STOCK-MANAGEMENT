@@ -32,12 +32,10 @@ class OrderCreateController extends Controller
         // Log the request data for debugging
         \Log::info('Order creation request received', [
             'request_data' => $request->all(),
-            'is_ajax' => $request->ajax(),
             'product_ids' => $request->product_ids,
             'quantities' => $request->quantities,
-            'notes' => $request->notes,
-            'user_id' => Auth::id(),
-            'user_name' => Auth::user() ? Auth::user()->name : 'Unknown'
+            'name' => $request->name,
+            'user_id' => Auth::id()
         ]);
 
         // Simplified order creation with minimal error-prone code
@@ -45,28 +43,60 @@ class OrderCreateController extends Controller
             // Validate the request with more lenient rules
             $validated = $request->validate([
                 'product_ids' => 'required|array',
-                'product_ids.*' => 'required',  // Just make sure they exist in the request
+                'product_ids.*' => 'required',
                 'quantities' => 'required|array',
-                'quantities.*' => 'required',   // Just make sure they exist in the request
-                // Removed notes validation as it doesn't exist in the database
-            ]);
-
-            // Log successful validation
-            \Log::info('Order validation passed', [
-                'product_ids' => $request->product_ids,
-                'quantities' => $request->quantities
+                'quantities.*' => 'required',
+                'name' => 'nullable|string|max:255',
             ]);
 
             // Start a database transaction
             DB::beginTransaction();
 
-            // Create a new order
+            // Create a new order with direct attribute assignment
             $order = new Order();
             $order->user_id = Auth::id();
             $order->status = 'pending';
-            // Removed notes field as it doesn't exist in the database
+
+            // IMPORTANT: Directly set the name attribute
+            $customerName = $request->input('name');
+            $order->name = $customerName;
+
+            // Ensure the name is set in the attributes array
+            $order->setAttribute('name', $customerName);
+
+            // Log the name being set
+            \Log::info('Setting customer name directly', [
+                'customer_name' => $customerName,
+                'order_id' => 'not yet created'
+            ]);
+
             $order->total_amount = 0; // Will be calculated later
             $order->save();
+
+            // Force update the name in the database after saving
+            DB::statement("UPDATE orders SET name = ? WHERE id = ?", [$customerName, $order->id]);
+            \Log::info('Force updated name in database', [
+                'order_id' => $order->id,
+                'name' => $customerName
+            ]);
+
+            // Verify the order was created with the correct name
+            $freshOrder = Order::find($order->id);
+            \Log::info('Order created with name verification', [
+                'order_id' => $freshOrder->id,
+                'name_in_db' => $freshOrder->name,
+                'customer_name_from_request' => $customerName,
+                'display_name' => $freshOrder->getDisplayName()
+            ]);
+
+            // Log order creation with name
+            \Log::info('Order created', [
+                'order_id' => $order->id,
+                'user_id' => Auth::id(),
+                'name' => $order->name,
+                'display_name' => $order->getDisplayName(),
+                'status' => $order->status
+            ]);
 
             $totalAmount = 0;
 
@@ -136,9 +166,12 @@ class OrderCreateController extends Controller
             try {
                 $userName = Auth::check() ? (is_object(Auth::user()) ? Auth::user()->name : 'Unknown User') : 'Unknown User';
 
+                // Get the display name which will include the customer name if provided
+                $displayName = $order->getDisplayName();
+
                 Notification::create([
                     'title' => 'New Order Created',
-                    'message' => 'New order #' . $order->id . ' has been created by ' . $userName . ' for $' . number_format($totalAmount, 2),
+                    'message' => 'New order "' . $displayName . '" has been created by ' . $userName . ' for $' . number_format($totalAmount, 2),
                     'type' => 'success',
                     'is_read' => false,
                     'user_id' => Auth::id() ?? 1
@@ -148,15 +181,7 @@ class OrderCreateController extends Controller
                 \Log::error('Failed to create notification: ' . $e->getMessage());
             }
 
-            // Handle AJAX requests differently
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Order created successfully',
-                    'redirect' => route('orders.index')
-                ]);
-            }
-
+            // Always redirect to orders index with success message
             return redirect()->route('orders.index')
                 ->with('success', 'Order created successfully.');
 
@@ -170,15 +195,7 @@ class OrderCreateController extends Controller
                 'trace' => $e->getTraceAsString()
             ]);
 
-            // Handle AJAX requests differently
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'error' => $e->getMessage(),
-                    'message' => 'Failed to create order: ' . $e->getMessage()
-                ], 500);
-            }
-
+            // Always redirect back with error message
             return back()->withErrors(['error' => $e->getMessage()])->withInput();
         }
     }

@@ -72,7 +72,8 @@ class DashboardController extends Controller
 
         // ===== PRODUCTS CARD =====
         $productCount = Product::count();
-        $lowStockCount = Product::where('quantity', '<', 10)->count();
+        // Low stock should be > 0 and < 10, not including out of stock items
+        $lowStockCount = Product::where('quantity', '>', 0)->where('quantity', '<', 10)->count();
         $outOfStockCount = Product::where('quantity', 0)->count();
         $latestProduct = Product::with('category')->latest()->first();
 
