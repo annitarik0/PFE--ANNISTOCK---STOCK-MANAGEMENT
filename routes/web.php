@@ -58,6 +58,9 @@ Route::middleware(['auth', \App\Http\Middleware\HandleAuthErrors::class])->group
     // My Orders route - shows only the current user's orders
     Route::get('/my-orders', [OrderController::class, 'myOrders'])->name('orders.my');
 
+    // Purchase Order PDF generation route
+    Route::get('/orders/{order}/purchase-order', [OrderController::class, 'generatePurchaseOrder'])->name('orders.purchase-order');
+
     // Special routes for order creation with our simplified controller
     Route::get('/orders/create', [App\Http\Controllers\OrderCreateController::class, 'create'])->name('orders.create');
     Route::post('/orders', [App\Http\Controllers\OrderCreateController::class, 'store'])->name('orders.store');

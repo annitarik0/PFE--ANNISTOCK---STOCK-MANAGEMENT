@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class OrderController extends Controller
 {
@@ -475,6 +476,66 @@ class OrderController extends Controller
             \Session::flash('error', 'Failed to update order: ' . $e->getMessage());
 
             return back()->withErrors(['error' => $e->getMessage()])->withInput();
+        }
+    }
+
+    /**
+     * Generate a PDF purchase order for an order with 'processing' status.
+     */
+    public function generatePurchaseOrder(Order $order)
+    {
+        try {
+            // Check if order status is processing
+            if ($order->status !== 'processing') {
+                return redirect()->back()->with('error', 'Only processing orders can have purchase orders generated.');
+            }
+
+            // Load order with relationships
+            $order->load(['user', 'items.product']);
+
+            // Check if GD extension is loaded
+            if (!extension_loaded('gd')) {
+                \Log::warning('GD extension not loaded. Using text-only PDF template.');
+                // We'll continue anyway, as we've modified the template to not require images
+            }
+
+            // Log for debugging
+            \Log::info('Generating purchase order PDF', [
+                'order_id' => $order->id,
+                'order_status' => $order->status,
+                'user_id' => $order->user_id,
+                'items_count' => $order->items->count(),
+                'gd_extension_loaded' => extension_loaded('gd')
+            ]);
+
+            // Configure PDF options for better rendering
+            $options = [
+                'isHtml5ParserEnabled' => true,
+                'isRemoteEnabled' => false,
+                'defaultFont' => 'helvetica',
+                'dpi' => 150,
+                'defaultPaperSize' => 'a4',
+                'defaultPaperOrientation' => 'portrait',
+                'isFontSubsettingEnabled' => true
+            ];
+
+            // Generate PDF with options
+            $pdf = PDF::loadView('orders.pdf.purchase-order', compact('order'))
+                      ->setOptions($options);
+
+            // Return the PDF for download
+            return $pdf->download('purchase-order-' . $order->id . '.pdf');
+        } catch (\Exception $e) {
+            // Log the error
+            \Log::error('Failed to generate purchase order PDF', [
+                'order_id' => $order->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'gd_extension_loaded' => extension_loaded('gd')
+            ]);
+
+            // Redirect back with error message
+            return redirect()->back()->with('error', 'Failed to generate purchase order: ' . $e->getMessage());
         }
     }
 

@@ -668,6 +668,22 @@
                         </div>
                     @endif
 
+                    @if($order->status === 'processing')
+                    <div class="order-card mb-4">
+                        <div class="card-header">
+                            <h5><i class="mdi mdi-file-document-outline"></i> Purchase Order</h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="mb-3">Generate a purchase order document for this order.</p>
+                            <a href="{{ route('orders.purchase-order', $order) }}" class="btn-update-status" style="display: inline-block; text-decoration: none; text-align: center;">
+                                <i class="mdi mdi-file-pdf-box"></i> Generate Purchase Order
+                            </a>
+                        </div>
+                    </div>
+                    @endif
+
+
+
                     <div class="order-card">
                         <div class="card-header">
                             <h5><i class="mdi mdi-information"></i> Order Timeline</h5>
