@@ -10,7 +10,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SearchController;
-use App\Http\Controllers\LanguageController;
 
 Route::get('/', function () {
     // If the user is already authenticated, redirect to dashboard
@@ -32,7 +31,6 @@ Route::middleware(['auth', \App\Http\Middleware\HandleAuthErrors::class])->group
 });
 
 require __DIR__.'/auth.php';
-require __DIR__.'/test.php';
 
 // Routes that require authentication
 Route::middleware(['auth', \App\Http\Middleware\HandleAuthErrors::class])->group(function () {
@@ -78,15 +76,7 @@ Route::post('/clear-flash-messages', function() {
     return response()->json(['status' => 'success']);
 })->middleware('web');
 
-// Debug route for form submissions
-Route::post('/debug-form', function(Illuminate\Http\Request $request) {
-    \Log::info('Debug form submission', [
-        'all_data' => $request->all(),
-        'files' => $request->hasFile('image') ? 'Has image file' : 'No image file',
-        'headers' => $request->headers->all(),
-    ]);
-    return response()->json(['status' => 'success', 'data' => $request->all()]);
-});
+
 
 // Direct route to create user page - protected by admin middleware
 Route::get('/direct-create-user', function() {
