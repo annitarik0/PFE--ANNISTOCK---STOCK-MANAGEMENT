@@ -485,6 +485,17 @@ class OrderController extends Controller
     public function generatePurchaseOrder(Order $order)
     {
         try {
+            // Security check: Only admins or the user who created the order can generate purchase orders
+            if (!Auth::user()->isAdmin() && Auth::id() !== $order->user_id) {
+                \Log::warning('Unauthorized attempt to generate purchase order', [
+                    'order_id' => $order->id,
+                    'order_user_id' => $order->user_id,
+                    'current_user_id' => Auth::id(),
+                    'is_admin' => Auth::user()->isAdmin()
+                ]);
+                return redirect()->back()->with('error', 'You are not authorized to generate purchase orders for this order.');
+            }
+
             // Check if order status is processing
             if ($order->status !== 'processing') {
                 return redirect()->back()->with('error', 'Only processing orders can have purchase orders generated.');
@@ -504,6 +515,8 @@ class OrderController extends Controller
                 'order_id' => $order->id,
                 'order_status' => $order->status,
                 'user_id' => $order->user_id,
+                'current_user_id' => Auth::id(),
+                'is_admin' => Auth::user()->isAdmin(),
                 'items_count' => $order->items->count(),
                 'gd_extension_loaded' => extension_loaded('gd')
             ]);
