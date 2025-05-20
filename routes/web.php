@@ -35,7 +35,7 @@ require __DIR__.'/auth.php';
 // Routes that require authentication
 Route::middleware(['auth', \App\Http\Middleware\HandleAuthErrors::class])->group(function () {
     // User management routes - admin only
-    Route::middleware(\App\Http\Middleware\IsAdmin::class)->group(function () {
+    Route::middleware('admin')->group(function () {
         // Original user routes
         Route::resource("users", UserController::class)->except(['create', 'store']);
 
@@ -55,7 +55,7 @@ Route::middleware(['auth', \App\Http\Middleware\HandleAuthErrors::class])->group
     Route::get('/products/filter/{status}', [ProductController::class, 'filterByStock'])->name('products.filter');
 
     // Admin-only product management routes
-    Route::middleware(\App\Http\Middleware\IsAdmin::class)->group(function () {
+    Route::middleware('admin')->group(function () {
         Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
         Route::post('/products', [ProductController::class, 'store'])->name('products.store');
         Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
@@ -99,7 +99,7 @@ Route::post('/clear-flash-messages', function() {
 // Direct route to create user page - protected by admin middleware
 Route::get('/direct-create-user', function() {
     return view('users.create');
-})->middleware(['auth', \App\Http\Middleware\HandleAuthErrors::class, \App\Http\Middleware\IsAdmin::class]);
+})->middleware(['auth', \App\Http\Middleware\HandleAuthErrors::class, 'admin']);
 
 // Order creation routes - using the original controller
 Route::get('/create-order', [App\Http\Controllers\OrderCreateController::class, 'create'])

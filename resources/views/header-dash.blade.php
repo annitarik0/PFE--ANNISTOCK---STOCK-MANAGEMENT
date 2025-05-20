@@ -194,15 +194,15 @@
                                                 <x-dropdown-link :href="route('logout')"
                                                     onclick="event.preventDefault();
                                                     this.closest('form').submit();">
-                                                    @if(app()->getLocale() == 'fr') Déconnexion @else Logout @endif
+                                                    Logout
                                                 </x-dropdown-link>
                                             </form>
                                         @else
                                             <a class="dropdown-item" href="{{ route('login') }}"><i class="dripicons-user text-muted"></i>
-                                                @if(app()->getLocale() == 'fr') Connexion @else Login @endif
+                                                Login
                                             </a>
                                             <a class="dropdown-item" href="{{ route('register') }}"><i class="dripicons-gear text-muted"></i>
-                                                @if(app()->getLocale() == 'fr') Inscription @else Register @endif
+                                                Register
                                             </a>
                                         @endif
                                     </div>
@@ -241,43 +241,43 @@
 
                                 <li class="has-submenu">
                                     <a href="{{ route('dashboard')}}"><i class="dripicons-home"></i>
-                                        @if(app()->getLocale() == 'fr') Tableau de bord @else Dashboard @endif
+                                        Dashboard
                                     </a>
                                 </li>
 
                                 @if(Auth::check() && is_object(Auth::user()) && Auth::user()->isAdmin())
                                     <li class="has-submenu">
                                         <a href="{{ route('users.index') }}"><i class="dripicons-user-group"></i>
-                                            @if(app()->getLocale() == 'fr') Utilisateurs @else Users @endif
+                                            Users
                                         </a>
                                     </li>
                                 @endif
 
                                 <li class="has-submenu">
                                     <a href="{{ route('products.index') }}"><i class="dripicons-store"></i>
-                                        @if(app()->getLocale() == 'fr') Produits @else Products @endif
+                                        Products
                                     </a>
                                 </li>
 
                                 @if(Auth::check() && is_object(Auth::user()) && Auth::user()->isAdmin())
                                     <li class="has-submenu">
                                         <a href="{{ route('categories.index') }}"><i class="dripicons-tags"></i>
-                                            @if(app()->getLocale() == 'fr') Catégories @else Categories @endif
+                                            Categories
                                         </a>
                                     </li>
                                 @endif
 
                                 <li class="has-submenu">
                                     <a href="#"><i class="dripicons-cart"></i>
-                                        @if(app()->getLocale() == 'fr') Commandes @else Orders @endif
+                                        Orders
                                         <div class="arrow-down"></div>
                                     </a>
                                     <ul class="submenu">
                                         <li><a href="{{ route('orders.index') }}">
-                                            @if(app()->getLocale() == 'fr') Toutes les commandes @else All Orders @endif
+                                            All Orders
                                         </a></li>
                                         <li><a href="{{ route('orders.my') }}">
-                                            @if(app()->getLocale() == 'fr') Mes commandes @else My Orders @endif
+                                            My Orders
                                         </a></li>
                                     </ul>
                                 </li>
@@ -996,11 +996,18 @@
                     searchResults.innerHTML = '<div class="search-no-results">Searching...</div>';
                     searchResults.classList.add('active');
 
-                    // Make AJAX request to search endpoint
-                    fetch(`{{ route('api.search') }}?query=${encodeURIComponent(query)}`, {
+                    // Sanitize the query before sending
+                    const sanitizedQuery = query.replace(/[^\w\s]/gi, '');
+
+                    // Add CSRF token for security
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+                    // Make AJAX request to search endpoint with improved security
+                    fetch(`{{ route('api.search') }}?query=${encodeURIComponent(sanitizedQuery)}`, {
                         headers: {
                             'Accept': 'application/json',
-                            'X-Requested-With': 'XMLHttpRequest'
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': csrfToken
                         }
                     })
                     .then(response => {
@@ -1101,8 +1108,26 @@
                     })
                     .catch(error => {
                         console.error('Error performing search:', error);
+
+                        // Log the error for monitoring
+                        fetch('/log-js-error', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken,
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: JSON.stringify({
+                                error: error.message,
+                                location: 'search',
+                                query: sanitizedQuery
+                            })
+                        }).catch(e => console.error('Error logging:', e));
+
                         // Show a more user-friendly error message
-                        searchResults.innerHTML = '<div class="search-no-results">No results found for "' + query + '"</div>';
+                        searchResults.innerHTML = '<div class="search-no-results">' +
+                            '<i class="mdi mdi-alert-circle-outline text-warning mr-2"></i>' +
+                            'No results found for "' + sanitizedQuery + '"</div>';
                         searchResults.classList.add('active');
                     });
                 }, 300);
@@ -1125,6 +1150,3 @@
 
         });
     </script>
-@php
-// This is a closing PHP tag to fix the syntax error
-@endphp

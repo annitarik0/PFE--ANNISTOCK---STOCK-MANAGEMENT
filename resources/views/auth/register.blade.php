@@ -192,10 +192,24 @@
                     return false;
                 }
 
-                // Additional validation
-                if (password.value.length < 6) {
+                // Enhanced password validation
+                const passwordValue = password.value;
+                if (passwordValue.length < 10) {
                     e.preventDefault();
-                    alert('Password must be at least 6 characters long.');
+                    alert('Password must be at least 10 characters long.');
+                    password.focus();
+                    return false;
+                }
+
+                // Check for uppercase, lowercase, number, and special character
+                const hasUpperCase = /[A-Z]/.test(passwordValue);
+                const hasLowerCase = /[a-z]/.test(passwordValue);
+                const hasNumbers = /\d/.test(passwordValue);
+                const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(passwordValue);
+
+                if (!hasUpperCase || !hasLowerCase || !hasNumbers || !hasSpecialChar) {
+                    e.preventDefault();
+                    alert('Password must include at least one uppercase letter, one lowercase letter, one number, and one special character.');
                     password.focus();
                     return false;
                 }

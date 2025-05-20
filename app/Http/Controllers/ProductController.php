@@ -17,8 +17,8 @@ class ProductController extends Controller
     {
         // Additional security check in the controller
         $this->middleware('auth');
-        // Use the correct middleware alias as defined in Kernel.php
-        $this->middleware(\App\Http\Middleware\IsAdmin::class)->only(['create', 'store', 'edit', 'update', 'destroy']);
+        // Use the admin middleware alias
+        $this->middleware('admin')->only(['create', 'store', 'edit', 'update', 'destroy']);
     }
     /**
      * Display a listing of the resource.

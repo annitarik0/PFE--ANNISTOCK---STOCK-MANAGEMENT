@@ -844,15 +844,15 @@
                 <div class="row dashboard-stats-row">
                     <!-- USERS CARD - Enhanced with more details and visual elements -->
                     <div class="col-xl-3 col-md-6">
-                        <div class="card bg-primary mini-stat text-white">
+                        <div class="card bg-primary mini-stat text-white dashboard-card">
                             <div class="p-3 mini-stat-desc">
-                                <div class="clearfix">
-                                    <h6 class="text-uppercase mt-0 float-left text-white">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="text-uppercase mt-0 text-white font-weight-bold">
                                         <i class="mdi mdi-account-group mr-1"></i> Users
                                     </h6>
-                                    <h4 class="mb-3 mt-0 float-right">{{ $userCount }}</h4>
+                                    <h4 class="mb-0 mt-0 font-weight-bold">{{ $userCount }}</h4>
                                 </div>
-                                <div>
+                                <div class="mt-3">
                                     @if($percentChange > 0)
                                         <span class="badge badge-light text-info"> <i class="mdi mdi-arrow-up-bold"></i> +{{ $percentChange }}% </span>
                                     @elseif($percentChange < 0)
@@ -1877,28 +1877,28 @@
         <script src="{{asset('admin/assets/js/app.js')}}"></script>
 
         @if(Auth::check() && is_object(Auth::user()) && Auth::user()->isAdmin())
-        <!-- Clean Chart Styles -->
+        <!-- Enhanced Dashboard Styles -->
         <style>
             /* Chart Container */
             .chart-container {
                 position: relative;
                 height: 220px;
                 margin: 0 auto;
-                border-radius: 6px;
+                border-radius: 10px;
                 overflow: hidden;
             }
 
             .premium-chart {
                 background: #fff;
-                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-                padding: 10px;
-                border: 1px solid rgba(0,0,0,0.05);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+                padding: 15px;
+                border-radius: 10px;
                 transition: all 0.3s ease;
             }
 
             .premium-chart:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+                transform: translateY(-5px);
+                box-shadow: 0 8px 16px rgba(0,0,0,0.1);
             }
 
             .chart-overlay {
@@ -1909,10 +1909,41 @@
                 transition: all 0.3s ease;
             }
 
+            /* Dashboard Card Enhancements */
+            .dashboard-card {
+                overflow: hidden;
+                border-radius: 10px;
+                transition: all 0.3s ease;
+            }
+
+            .dashboard-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            }
+
+            .dashboard-card::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+                transform: rotate(30deg);
+                transition: all 0.5s ease;
+                opacity: 0;
+            }
+
+            .dashboard-card:hover::before {
+                opacity: 1;
+            }
+
             /* Revenue Chart Container and Labels */
             .revenue-chart-container {
                 position: relative;
                 margin-bottom: 15px;
+                border-radius: 10px;
+                overflow: hidden;
             }
 
             .chart-labels {

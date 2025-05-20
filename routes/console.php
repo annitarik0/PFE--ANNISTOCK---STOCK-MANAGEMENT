@@ -26,20 +26,4 @@ Artisan::command('app:stats', function () {
     $this->info('Completed Orders: ' . Order::where('status', 'completed')->count());
 })->purpose('Display system statistics');
 
-// Command to reset admin password
-Artisan::command('app:reset-admin-password {email?} {password?}', function ($email = null, $password = null) {
-    $email = $email ?? 'admin@gmail.com';
-    $password = $password ?? '123456';
-
-    $user = User::where('email', $email)->first();
-
-    if (!$user) {
-        $this->error("User with email {$email} not found.");
-        return 1;
-    }
-
-    $user->password = Hash::make($password);
-    $user->save();
-
-    $this->info("Password for {$email} has been reset to: {$password}");
-})->purpose('Reset admin password');
+// Command to reset admin password is now handled by ResetAdminPasswordCommand.php

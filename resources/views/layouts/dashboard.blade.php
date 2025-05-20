@@ -34,50 +34,109 @@
             padding: 0 15px 65px 15px;
             min-height: 80vh;
             margin-top: 70px;
+            transition: all 0.3s ease;
         }
 
         .card {
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             margin-bottom: 30px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         }
 
         .card-header {
             background-color: #f8f9fa;
             border-bottom: 1px solid #eaeaea;
-            padding: 15px 20px;
+            padding: 18px 22px;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            font-weight: 600;
         }
 
         .card-body {
-            padding: 20px;
+            padding: 22px;
         }
 
         .btn-primary {
             background-color: #4e73df;
             border-color: #4e73df;
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
 
         .btn-primary:hover {
             background-color: #2e59d9;
             border-color: #2e59d9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(46, 89, 217, 0.2);
         }
 
         .table th {
             font-weight: 600;
             background-color: #f8f9fa;
+            padding: 12px 15px;
+        }
+
+        .table td {
+            padding: 12px 15px;
+            vertical-align: middle;
         }
 
         .badge {
             font-weight: 500;
-            padding: 5px 10px;
-            border-radius: 4px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            letter-spacing: 0.3px;
         }
 
-        @media (max-width: 768px) {
+        /* Improved loading spinner */
+        .spinner-border {
+            width: 1.5rem;
+            height: 1.5rem;
+            border-width: 0.2em;
+        }
+
+        /* Improved form controls */
+        .form-control {
+            padding: 10px 15px;
+            height: auto;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(78, 115, 223, 0.15);
+        }
+
+        @media (max-width: 992px) {
             .content-page {
                 margin-left: 0;
+                padding: 0 12px 65px 12px;
+            }
+
+            .card {
+                margin-bottom: 20px;
+            }
+
+            .card-header {
+                padding: 15px 18px;
+            }
+
+            .card-body {
+                padding: 18px;
             }
         }
+
+
     </style>
 
     @yield('styles')

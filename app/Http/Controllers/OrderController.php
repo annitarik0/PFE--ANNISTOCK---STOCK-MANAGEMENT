@@ -497,8 +497,8 @@ class OrderController extends Controller
             }
 
             // Check if order status allows purchase order generation
-            if ($order->status === 'completed' || $order->status === 'cancelled') {
-                return redirect()->back()->with('error', 'Purchase orders cannot be generated for completed or cancelled orders.');
+            if ($order->status !== 'completed') {
+                return redirect()->back()->with('error', 'Purchase orders can only be generated for completed orders.');
             }
 
             // Load order with relationships
@@ -519,7 +519,7 @@ class OrderController extends Controller
                 'is_admin' => Auth::user()->isAdmin(),
                 'items_count' => $order->items->count(),
                 'gd_extension_loaded' => extension_loaded('gd'),
-                'allowed_status' => 'pending or processing'
+                'allowed_status' => 'completed'
             ]);
 
             // Configure PDF options for better rendering
@@ -530,11 +530,27 @@ class OrderController extends Controller
                 'dpi' => 150,
                 'defaultPaperSize' => 'a4',
                 'defaultPaperOrientation' => 'portrait',
-                'isFontSubsettingEnabled' => true
+                'isFontSubsettingEnabled' => true,
+                'margin_left' => 5,
+                'margin_right' => 5,
+                'margin_top' => 5,
+                'margin_bottom' => 5
+            ];
+
+            // Prepare data for the PDF view
+            $data = [
+                'order' => $order,
+                'company' => [
+                    'name' => 'ANNISTOCK Inc.',
+                    'tagline' => 'Inventory Management',
+                    'address' => 'Enterprise Analytics',
+                    'email' => 'support@annistock.com'
+                ],
+                'generated_at' => now()->format('F d, Y H:i:s')
             ];
 
             // Generate PDF with options
-            $pdf = PDF::loadView('orders.pdf.purchase-order', compact('order'))
+            $pdf = PDF::loadView('orders.pdf.purchase-order', $data)
                       ->setOptions($options);
 
             // Return the PDF for download

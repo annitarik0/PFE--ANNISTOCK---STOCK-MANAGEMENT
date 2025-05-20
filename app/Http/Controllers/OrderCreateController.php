@@ -40,13 +40,14 @@ class OrderCreateController extends Controller
 
         // Simplified order creation with minimal error-prone code
         try {
-            // Validate the request with more lenient rules
+            // Validate the request with stricter rules for security
             $validated = $request->validate([
                 'product_ids' => 'required|array',
-                'product_ids.*' => 'required',
+                'product_ids.*' => 'required|integer|exists:products,id',
                 'quantities' => 'required|array',
-                'quantities.*' => 'required',
+                'quantities.*' => 'required|integer|min:1',
                 'name' => 'nullable|string|max:255',
+                'notes' => 'nullable|string|max:500',
             ]);
 
             // Start a database transaction
