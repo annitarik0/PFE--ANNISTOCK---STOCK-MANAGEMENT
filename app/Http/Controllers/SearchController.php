@@ -358,9 +358,19 @@ class SearchController extends Controller
     public function apiSearch(Request $request)
     {
         try {
-            $query = $request->input('query');
-            $filter = $request->input('filter', 'all');
-            $limit = $request->input('limit', 10);
+            // Validate input parameters
+            $validated = $request->validate([
+                'query' => 'required|string|max:100',
+                'filter' => 'sometimes|string|in:all,products,categories,users,orders',
+                'limit' => 'sometimes|integer|min:1|max:50',
+            ]);
+
+            $query = $validated['query'];
+            $filter = $validated['filter'] ?? 'all';
+            $limit = $validated['limit'] ?? 10;
+
+            // Sanitize the search query to prevent SQL injection
+            $query = preg_replace('/[^\p{L}\p{N}\s\-_]/u', '', $query);
 
             if (empty($query)) {
                 return response()->json([

@@ -46,7 +46,11 @@ class UserCreateController extends Controller
             $validated = $request->validate([
                 "name" => "required|string|max:255",
                 "email" => "required|email|unique:users",
-                "password" => "required|min:6",
+                "password" => [
+                    'required',
+                    'min:10',
+                    'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{10,}$/',
+                ],
                 "password_confirmation" => "required|same:password",
                 "image" => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
                 "role" => "required|in:employee,admin",

@@ -93,13 +93,22 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        // Reduced from 5 to 3 attempts for better security
+        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 3)) {
             return;
         }
 
         event(new Lockout($this));
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
+
+        // Log potential brute force attempts
+        \Log::warning('Login rate limit exceeded', [
+            'email' => $this->input('email'),
+            'ip' => $this->ip(),
+            'user_agent' => $this->header('User-Agent'),
+            'lockout_seconds' => $seconds
+        ]);
 
         throw ValidationException::withMessages([
             'email' => trans('auth.throttle', [
@@ -114,7 +123,11 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
+        // Include user agent hash in the throttle key for better security
+        $userAgent = $this->header('User-Agent') ?? 'unknown';
+        $userAgentHash = substr(md5($userAgent), 0, 8);
+
+        return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip().'|'.$userAgentHash);
     }
 }
 
