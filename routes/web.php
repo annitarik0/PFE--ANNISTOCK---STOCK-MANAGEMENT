@@ -46,11 +46,26 @@ Route::middleware(['auth', \App\Http\Middleware\HandleAuthErrors::class])->group
         Route::resource("categories", CategoryController::class);
     });
 
-    // Product routes - all users can view
-    Route::resource("products", ProductController::class);
+    // Product routes - split by permission level
 
-    // Product filter routes
+    // Routes accessible to all authenticated users (view only)
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+
+    // Product filter routes - must be defined before the wildcard route
     Route::get('/products/filter/{status}', [ProductController::class, 'filterByStock'])->name('products.filter');
+
+    // Admin-only product management routes
+    Route::middleware(\App\Http\Middleware\IsAdmin::class)->group(function () {
+        Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
+        Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+        Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
+        Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
+        Route::patch('/products/{product}', [ProductController::class, 'update']);
+        Route::delete('/products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
+    });
+
+    // Product detail view - accessible to all authenticated users (must be after specific routes)
+    Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
 
     // Order routes - all authenticated users
     Route::resource("orders", OrderController::class)->except(['create', 'store']);

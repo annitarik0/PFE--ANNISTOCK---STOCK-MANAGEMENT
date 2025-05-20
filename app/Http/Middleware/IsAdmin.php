@@ -36,6 +36,7 @@ class IsAdmin
             return $next($request);
         }
 
-        return redirect()->route('dashboard')->with('error', 'You do not have permission to access this page.');
+        // Redirect to dashboard without error message
+        return redirect()->route('dashboard');
     }
 }

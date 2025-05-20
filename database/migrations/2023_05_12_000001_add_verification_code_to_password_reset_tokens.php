@@ -12,8 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('password_reset_tokens', function (Blueprint $table) {
-            $table->string('verification_code', 6)->nullable()->after('token');
-            $table->boolean('is_verified')->default(false)->after('verification_code');
+            if (!Schema::hasColumn('password_reset_tokens', 'verification_code')) {
+                $table->string('verification_code', 6)->nullable()->after('token');
+            }
+
+            if (!Schema::hasColumn('password_reset_tokens', 'is_verified')) {
+                $table->boolean('is_verified')->default(false)->after('verification_code');
+            }
         });
     }
 

@@ -13,7 +13,12 @@ class ProductController extends Controller
     /**
      * Create a new controller instance.
      */
-    // No middleware needed here as it's handled in routes
+    public function __construct()
+    {
+        // Additional security check in the controller
+        $this->middleware('auth');
+        $this->middleware('is_admin')->only(['create', 'store', 'edit', 'update', 'destroy']);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -58,6 +63,12 @@ class ProductController extends Controller
      */
     public function create()
     {
+        // Double-check that the user is an admin
+        if (!auth()->user()->isAdmin()) {
+            // Redirect to dashboard without error message
+            return redirect()->route('dashboard');
+        }
+
         $categories = Category::all();
         return view("products.create", compact('categories'));
     }
@@ -67,6 +78,11 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        // Double-check that the user is an admin
+        if (!auth()->user()->isAdmin()) {
+            // Redirect to dashboard without error message
+            return redirect()->route('dashboard');
+        }
         // Log the request data for debugging
         \Log::info('Product creation attempt - START', [
             'request_data' => $request->except(['image']),
@@ -233,6 +249,12 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
+        // Double-check that the user is an admin
+        if (!auth()->user()->isAdmin()) {
+            // Redirect to dashboard without error message
+            return redirect()->route('dashboard');
+        }
+
         $product = Product::with('category')->findOrFail($id);
         $categories = Category::all();
         return view('products.edit', compact('product', 'categories'));
@@ -243,6 +265,12 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // Double-check that the user is an admin
+        if (!auth()->user()->isAdmin()) {
+            // Redirect to dashboard without error message
+            return redirect()->route('dashboard');
+        }
+
         $request->validate([
             'name' => 'required|string|unique:products,name,' . $id,
             'price' => 'required|numeric|min:0',
@@ -339,6 +367,11 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
+        // Double-check that the user is an admin
+        if (!auth()->user()->isAdmin()) {
+            // Redirect to dashboard without error message
+            return redirect()->route('dashboard');
+        }
         $product = Product::findOrFail($id);
 
         // Delete the product's image if it exists

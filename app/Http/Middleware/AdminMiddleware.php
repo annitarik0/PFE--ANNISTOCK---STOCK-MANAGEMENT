@@ -23,8 +23,8 @@ class AdminMiddleware
 
         // Check if user is admin
         if (!Auth::user()->isAdmin()) {
-            return redirect()->route('dashboard')
-                ->with('error', 'You do not have permission to access this page. Admin role required.');
+            // Redirect to dashboard without error message
+            return redirect()->route('dashboard');
         }
 
         return $next($request);
