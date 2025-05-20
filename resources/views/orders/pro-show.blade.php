@@ -668,7 +668,7 @@
                         </div>
                     @endif
 
-                    @if($order->status === 'processing' && (Auth::user()->isAdmin() || Auth::id() === $order->user_id))
+                    @if($order->status !== 'completed' && $order->status !== 'cancelled' && (Auth::user()->isAdmin() || Auth::id() === $order->user_id))
                     <div class="order-card mb-4">
                         <div class="card-header">
                             <h5><i class="mdi mdi-file-document-outline"></i> Purchase Order</h5>

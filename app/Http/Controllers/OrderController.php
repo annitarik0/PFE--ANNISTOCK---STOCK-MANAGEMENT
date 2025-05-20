@@ -496,9 +496,9 @@ class OrderController extends Controller
                 return redirect()->back()->with('error', 'You are not authorized to generate purchase orders for this order.');
             }
 
-            // Check if order status is processing
-            if ($order->status !== 'processing') {
-                return redirect()->back()->with('error', 'Only processing orders can have purchase orders generated.');
+            // Check if order status allows purchase order generation
+            if ($order->status === 'completed' || $order->status === 'cancelled') {
+                return redirect()->back()->with('error', 'Purchase orders cannot be generated for completed or cancelled orders.');
             }
 
             // Load order with relationships
@@ -518,7 +518,8 @@ class OrderController extends Controller
                 'current_user_id' => Auth::id(),
                 'is_admin' => Auth::user()->isAdmin(),
                 'items_count' => $order->items->count(),
-                'gd_extension_loaded' => extension_loaded('gd')
+                'gd_extension_loaded' => extension_loaded('gd'),
+                'allowed_status' => 'pending or processing'
             ]);
 
             // Configure PDF options for better rendering
